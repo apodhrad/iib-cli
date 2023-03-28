@@ -96,11 +96,11 @@ func TestGrcpArgToCmdArgs(t *testing.T) {
 func TestGrpcApiList(t *testing.T) {
 	setIIB()
 
-	stdOut, stdErr, _ := GrpcExec(GrpcArg{api: "list"})
-	assert.Equal(t, EXPECTED_API_LIST, stdOut, stdErr)
+	stdOut, _ := GrpcExec(GrpcArg{api: "list"})
+	assert.Equal(t, EXPECTED_API_LIST, stdOut)
 
-	stdOut, stdErr, _ = GrpcExec(GrpcArg{api: "list api.Registry"})
-	assert.Equal(t, EXPECTED_API_LIST_REGISTRY, stdOut, stdErr)
+	stdOut, _ = GrpcExec(GrpcArg{api: "list api.Registry"})
+	assert.Equal(t, EXPECTED_API_LIST_REGISTRY, stdOut)
 
 	cleanEnv()
 }
@@ -108,7 +108,7 @@ func TestGrpcApiList(t *testing.T) {
 func TestGrpcApiDescribe(t *testing.T) {
 	setIIB()
 
-	stdOut, _, _ := GrpcExec(GrpcArg{api: "describe api.GetPackageRequest"})
+	stdOut, _ := GrpcExec(GrpcArg{api: "describe api.GetPackageRequest"})
 	assert.Equal(t, EXPECTED_API_DESCRIPTION_GETPKGREQ, stdOut)
 
 	cleanEnv()
@@ -125,7 +125,7 @@ const EXPECTED_REGISTRY_PACKAGES string = `{
 func TestGrpcRegistryListPackages(t *testing.T) {
 	setIIB()
 
-	stdOut, _, _ := GrpcExec(GrpcArg{method: "api.Registry/ListPackages"})
+	stdOut, _ := GrpcExec(GrpcArg{method: "api.Registry/ListPackages"})
 	assert.Equal(t, EXPECTED_REGISTRY_PACKAGES, stdOut)
 
 	cleanEnv()

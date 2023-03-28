@@ -6,6 +6,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/apodhrad/iib-cli/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -25,6 +26,11 @@ to quickly create a Cobra application.`,
 		fmt.Println("Args ", args)
 		fmt.Println("Output ", output)
 		fmt.Println("SEVICE,METHOD")
+		stdOut, err := utils.GrpcExec(utils.GrpcArgApi("listx"))
+		if err != nil {
+			fmt.Println("Error ", err)
+		}
+		fmt.Println(stdOut)
 	},
 }
 

@@ -19,6 +19,18 @@ type GrpcArg struct {
 	method string
 }
 
+func GrpcArgApi(api string) GrpcArg {
+	return GrpcArg{api: api}
+}
+
+func GrpcArgMethod(method string) GrpcArg {
+	return GrpcArg{method: method}
+}
+
+func GrpcArgMethodWithData(method string, data string) GrpcArg {
+	return GrpcArg{method: method, data: data}
+}
+
 func GrpcArgToCmdArgs(grpcArg GrpcArg) ([]string, error) {
 	var cmdArgs []string = []string{"-plaintext"}
 	if grpcArg.data != "" {
@@ -68,15 +80,15 @@ func GrpcStatus() (string, error) {
 	return status, err
 }
 
-func GrpcExec(grpcArg GrpcArg) (stdOut string, stdErr string, err error) {
+func GrpcExec(grpcArg GrpcArg) (stdOut string, err error) {
 	cmdArgs, err := GrpcArgToCmdArgs(grpcArg)
 	if err != nil {
-		return "", "", err
+		return "", err
 	}
 
 	err = GrpcStart()
 	if err != nil {
-		return "", "", err
+		return "", err
 	}
 
 	var errOut bytes.Buffer
@@ -84,5 +96,8 @@ func GrpcExec(grpcArg GrpcArg) (stdOut string, stdErr string, err error) {
 	cmd := exec.Command("grpcurl", cmdArgs...)
 	cmd.Stderr = &errOut
 	out, err := cmd.Output()
-	return string(out), errOut.String(), err
+	if err != nil {
+		err = errors.New(errOut.String() + err.Error())
+	}
+	return string(out), err
 }
