@@ -3,6 +3,7 @@ module github.com/apodhrad/iib-cli
 go 1.19
 
 require (
+	github.com/rodaine/table v1.1.0
 	github.com/spf13/cobra v1.6.1
 	github.com/stretchr/testify v1.8.2
 )
