@@ -34,7 +34,12 @@ func setIIB() {
 	os.Setenv("IIB", "quay.io/apodhrad/iib-test:v0.0.1")
 }
 
-func cleanEnv() {
+func start() {
+	setIIB()
+	GrpcStartSafely()
+}
+
+func clean() {
 	os.Unsetenv("IIB")
 	GrpcStop()
 }
@@ -46,7 +51,7 @@ func TestGrpcConstants(t *testing.T) {
 func TestGrpcStartStop(t *testing.T) {
 	setIIB()
 
-	err := GrpcStart()
+	err := GrpcStartSafely()
 	assert.Nil(t, err)
 	status, err := GrpcStatus()
 	assert.Regexp(t, "^Up", status)
@@ -56,7 +61,7 @@ func TestGrpcStartStop(t *testing.T) {
 	status, err = GrpcStatus()
 	assert.Empty(t, status)
 
-	cleanEnv()
+	clean()
 }
 
 func TestGrcpArgToCmdArgs(t *testing.T) {
@@ -94,7 +99,7 @@ func TestGrcpArgToCmdArgs(t *testing.T) {
 }
 
 func TestGrpcApiList(t *testing.T) {
-	setIIB()
+	start()
 
 	stdOut, _ := GrpcExec(GrpcArg{api: "list"})
 	assert.Equal(t, EXPECTED_API_LIST, stdOut)
@@ -102,16 +107,16 @@ func TestGrpcApiList(t *testing.T) {
 	stdOut, _ = GrpcExec(GrpcArg{api: "list api.Registry"})
 	assert.Equal(t, EXPECTED_API_LIST_REGISTRY, stdOut)
 
-	cleanEnv()
+	clean()
 }
 
 func TestGrpcApiDescribe(t *testing.T) {
-	setIIB()
+	start()
 
 	stdOut, _ := GrpcExec(GrpcArg{api: "describe api.GetPackageRequest"})
 	assert.Equal(t, EXPECTED_API_DESCRIPTION_GETPKGREQ, stdOut)
 
-	cleanEnv()
+	clean()
 }
 
 const EXPECTED_REGISTRY_PACKAGES string = `{
@@ -123,10 +128,10 @@ const EXPECTED_REGISTRY_PACKAGES string = `{
 `
 
 func TestGrpcRegistryListPackages(t *testing.T) {
-	setIIB()
+	start()
 
 	stdOut, _ := GrpcExec(GrpcArg{method: "api.Registry/ListPackages"})
 	assert.Equal(t, EXPECTED_REGISTRY_PACKAGES, stdOut)
 
-	cleanEnv()
+	clean()
 }

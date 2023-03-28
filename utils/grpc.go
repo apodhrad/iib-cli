@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"time"
 )
 
 const GRPC_NAME string = "iib_registry_server"
@@ -51,19 +52,41 @@ func GrpcArgToCmdArgs(grpcArg GrpcArg) ([]string, error) {
 func GrpcStart() error {
 	iib := os.Getenv("IIB")
 	if iib == "" {
-		err := errors.New("Specify index image via envvar IIB or via command set iib")
-		return err
-	}
-
-	status, _ := GrpcStatus()
-	if status != "" {
-		// ok, the server is already started
-		return nil
+		return errors.New("Specify index image via envvar IIB or via command set iib")
 	}
 
 	cmd := exec.Command("podman", "run", "-d", "--name", GRPC_NAME, "-p", GRPC_PORT+":"+GRPC_PORT, iib)
 	err := cmd.Run()
 	return err
+}
+
+func GrpcStartSafely() error {
+	status, err := GrpcStatus()
+	if err != nil {
+		return err
+	}
+	if status != "" {
+		// ok, the server is already started
+		return nil
+	}
+	// make sure there is no stopped container
+	GrpcStop()
+	// now we can start a new container
+	err = GrpcStart()
+	if err != nil {
+		return err
+	}
+	time.Sleep(2 * time.Second)
+	status, err = GrpcStatus()
+	if err != nil {
+		return err
+	}
+	if status != "" {
+		// ok, the server is properly started
+		return nil
+	} else {
+		return errors.New("Server was not started properly. Status: " + status)
+	}
 }
 
 func GrpcStop() error {
@@ -86,13 +109,7 @@ func GrpcExec(grpcArg GrpcArg) (stdOut string, err error) {
 		return "", err
 	}
 
-	err = GrpcStart()
-	if err != nil {
-		return "", err
-	}
-
 	var errOut bytes.Buffer
-
 	cmd := exec.Command("grpcurl", cmdArgs...)
 	cmd.Stderr = &errOut
 	out, err := cmd.Output()

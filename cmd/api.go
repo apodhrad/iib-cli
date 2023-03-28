@@ -5,6 +5,7 @@ package cmd
 
 import (
 	"bufio"
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -31,16 +32,17 @@ to quickly create a Cobra application.`,
 		// fmt.Println("Cmd ", cmd)
 		// fmt.Println("Args ", args)
 		// fmt.Println("Output ", output)
+		utils.GrpcStartSafely()
 		if len(args) == 0 {
 			table, json, err := listApi()
 			if err != nil {
 				fmt.Println(err.Error())
-				os.Exit(1)
+				exitSafely(1)
 			}
 			if output == "json" {
 				fmt.Println(json)
 			} else {
-				table.Print()
+				fmt.Println(table)
 			}
 		} else {
 			out, err := utils.GrpcExec(utils.GrpcArgApi("describe " + args[0]))
@@ -50,7 +52,13 @@ to quickly create a Cobra application.`,
 			}
 			fmt.Println(out)
 		}
+		exitSafely(0)
 	},
+}
+
+func exitSafely(code int) {
+	utils.GrpcStop()
+	os.Exit(code)
 }
 
 func init() {
@@ -73,10 +81,10 @@ type Service struct {
 	Methods []string
 }
 
-func listApi() (tblOut table.Table, jsonOut string, err error) {
+func listApi() (tblOut string, jsonOut string, err error) {
 	out, err := utils.GrpcExec(utils.GrpcArgApi("list"))
 	if err != nil {
-		return nil, "", err
+		return "", "", err
 	}
 
 	table.DefaultHeaderFormatter = func(format string, vals ...interface{}) string {
@@ -93,7 +101,7 @@ func listApi() (tblOut table.Table, jsonOut string, err error) {
 
 		out2, err := utils.GrpcExec(utils.GrpcArgApi("list " + serviceName))
 		if err != nil {
-			return nil, "", err
+			return "", "", err
 		}
 		methodScanner := bufio.NewScanner(strings.NewReader(out2))
 		for methodScanner.Scan() {
@@ -104,6 +112,11 @@ func listApi() (tblOut table.Table, jsonOut string, err error) {
 		services = append(services, service)
 	}
 
+	// b := new(bytes.Buffer)
+	var tblBuf bytes.Buffer
+	tbl.WithWriter(&tblBuf)
+	tbl.Print()
+
 	json, err := json.Marshal(services)
-	return tbl, string(json), err
+	return tblBuf.String(), string(json), err
 }
