@@ -103,7 +103,7 @@ func GrpcStatus() (string, error) {
 	return status, err
 }
 
-func GrpcExec(grpcArg GrpcArg) (stdOut string, err error) {
+func GrpcExec(grpcArg GrpcArg) (string, error) {
 	cmdArgs, err := GrpcArgToCmdArgs(grpcArg)
 	if err != nil {
 		return "", err
