@@ -69,24 +69,28 @@ func GrpcStartSafely() error {
 		// ok, the server is already started
 		return nil
 	}
-	// make sure there is no stopped container
-	GrpcStop()
-	// now we can start a new container
-	err = GrpcStart()
-	if err != nil {
-		return err
+
+	for i := 0; i < 3; i++ {
+		// make sure there is no stopped container
+		GrpcStopSafely()
+		// now we can start a new container
+		err = GrpcStart()
+		if err != nil {
+			return err
+		}
+		for j := 0; j < 3; j++ {
+			time.Sleep(2 * time.Second)
+			status, err = GrpcStatus()
+			if err != nil {
+				return err
+			}
+			if status != "" {
+				// ok, the server is properly started
+				return nil
+			}
+		}
 	}
-	time.Sleep(2 * time.Second)
-	status, err = GrpcStatus()
-	if err != nil {
-		return err
-	}
-	if status != "" {
-		// ok, the server is properly started
-		return nil
-	} else {
-		return errors.New("Server was not started properly. Status: " + status)
-	}
+	return errors.New("Server was not started properly. Status: " + status)
 }
 
 func GrpcStop() error {

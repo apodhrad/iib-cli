@@ -17,7 +17,7 @@ var packagesCmd = &cobra.Command{
 	Use:   "packages",
 	Short: "List all packages",
 	Long:  `List all packages`,
-	RunE:  packagesRunE,
+	RunE:  packagesCmdRunE,
 }
 
 func init() {
@@ -34,36 +34,43 @@ func init() {
 	// packagesCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func packagesExitE(err error) error {
-	utils.GrpcStop()
+func packagesCmdRunE(cmd *cobra.Command, args []string) error {
+	var err error
+	var out string
+	var packages []Package
+
+	out, err = packagesCmdGrpc()
+	if err == nil {
+		packages, err = packagesCmdUnmarshal(out)
+		if err == nil {
+			if output == "json" {
+				out, err = packagesCmdToJson(packages)
+			} else {
+				out, err = packagesCmdToText(packages)
+			}
+			if err == nil {
+				fmt.Println(out)
+			}
+		}
+	}
 	return err
 }
 
-type Channel struct {
-	Name    string `json:"name"`
-	CsvName string `json:"csvName"`
-}
+func packagesCmdGrpc() (string, error) {
+	var err error
+	var out string
 
-type Package struct {
-	Name               string    `json:"name"`
-	Channels           []Channel `json:"channels"`
-	DefaultChannelName string    `json:"defaultChannelName"`
-}
-
-func packagesToText(packages []Package) (string, error) {
-	tbl := NewTable("Package")
-	for _, value := range packages {
-		tbl.AddRow(value.Name)
+	err = utils.GrpcStartSafely()
+	if err == nil {
+		method := "api.Registry/ListPackages"
+		grpcArg := utils.GrpcArgMethod(method)
+		out, err = utils.GrpcExec(grpcArg)
 	}
-	return TableToString(tbl), nil
+	utils.GrpcStopSafely()
+	return out, err
 }
 
-func packagesToJson(packages []Package) (string, error) {
-	out, err := json.Marshal(packages)
-	return string(out), err
-}
-
-func getPackages(input string) ([]Package, error) {
+func packagesCmdUnmarshal(input string) ([]Package, error) {
 	// grpcurl produces improper json array
 	// so, we will fix it to a proper json array
 	numOfPackages := strings.Count(input, "}")
@@ -75,29 +82,15 @@ func getPackages(input string) ([]Package, error) {
 	return packages, err
 }
 
-func packagesRunE(cmd *cobra.Command, args []string) error {
-	var err error
-	var out string
-
-	err = utils.GrpcStartSafely()
-	if err == nil {
-		grpcArg := utils.GrpcArgMethod("api.Registry/ListPackages")
-		out, err = utils.GrpcExec(grpcArg)
-		if err == nil {
-			var packages []Package
-			packages, err = getPackages(out)
-			if err == nil {
-				var result string
-				if output == "json" {
-					result, err = packagesToJson(packages)
-				} else {
-					result, err = packagesToText(packages)
-				}
-				if err == nil {
-					fmt.Println(result)
-				}
-			}
-		}
+func packagesCmdToText(packages []Package) (string, error) {
+	tbl := NewTable("Package")
+	for _, value := range packages {
+		tbl.AddRow(value.Name)
 	}
-	return exitE(err)
+	return TableToString(tbl), nil
+}
+
+func packagesCmdToJson(packages []Package) (string, error) {
+	out, err := json.Marshal(packages)
+	return string(out), err
 }
