@@ -8,10 +8,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestMain(m *testing.M) {
-
-}
-
 func TestPackagesRunE(t *testing.T) {
 	utils.GrpcStopSafely()
 

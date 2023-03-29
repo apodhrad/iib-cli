@@ -39,8 +39,15 @@ func packagesExitE(err error) error {
 	return err
 }
 
+type Channel struct {
+	Name    string `json:"name"`
+	CsvName string `json:"csvName"`
+}
+
 type Package struct {
-	Name string `json:"name"`
+	Name               string    `json:"name"`
+	Channels           []Channel `json:"channels"`
+	DefaultChannelName string    `json:"defaultChannelName"`
 }
 
 func packagesToText(packages []Package) (string, error) {

@@ -63,7 +63,11 @@ func NewTable(headers ...string) table.Table {
 	table.DefaultHeaderFormatter = func(format string, vals ...interface{}) string {
 		return strings.ToUpper(fmt.Sprintf(format, vals...))
 	}
-	return table.New(headers)
+	newHeaders := make([]interface{}, len(headers))
+	for i, v := range headers {
+		newHeaders[i] = v
+	}
+	return table.New(newHeaders...)
 }
 
 func TableToString(tbl table.Table) string {
