@@ -8,7 +8,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/apodhrad/iib-cli/utils"
@@ -28,41 +27,37 @@ Examples:
   iib-cli api
   iib-cli api api.Registry/ListPackages
 `,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		// fmt.Println("Cmd ", cmd)
-		// fmt.Println("Args ", args)
-		// fmt.Println("Output ", output)
-		err := utils.GrpcStartSafely()
-		if err != nil {
-			return err
-		}
-		if len(args) == 0 {
-			table, json, err := listApi()
-			if err != nil {
-				fmt.Println(err.Error())
-				exitSafely(1)
-			}
-			if output == "json" {
-				fmt.Println(json)
-			} else {
-				fmt.Println(table)
-			}
-		} else {
-			out, err := utils.GrpcExec(utils.GrpcArgApi("describe " + args[0]))
-			if err != nil {
-				fmt.Println(err.Error())
-				os.Exit(1)
-			}
-			fmt.Println(out)
-		}
-		exitSafely(0)
-		return nil
-	},
+	RunE: apiRunE,
 }
 
-func exitSafely(code int) {
+func apiRunE(cmd *cobra.Command, args []string) error {
+	err := utils.GrpcStartSafely()
+	if err != nil {
+		return apiExitE(err)
+	}
+	if len(args) == 0 {
+		table, json, err := listApi()
+		if err != nil {
+			return apiExitE(err)
+		}
+		if output == "json" {
+			fmt.Println(json)
+		} else {
+			fmt.Println(table)
+		}
+	} else {
+		out, err := utils.GrpcExec(utils.GrpcArgApi("describe " + args[0]))
+		if err != nil {
+			apiExitE(err)
+		}
+		fmt.Println(out)
+	}
+	return apiExitE(nil)
+}
+
+func apiExitE(err error) error {
 	utils.GrpcStop()
-	os.Exit(code)
+	return err
 }
 
 func init() {
