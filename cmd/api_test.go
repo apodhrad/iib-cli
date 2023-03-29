@@ -24,6 +24,8 @@ grpc.reflection.v1alpha.ServerReflection  grpc.reflection.v1alpha.ServerReflecti
 `
 
 func TestListApi(t *testing.T) {
+	utils.GrpcStartSafely()
+
 	os.Setenv("IIB", "quay.io/apodhrad/iib-test:v0.0.1")
 	utils.GrpcStartSafely()
 

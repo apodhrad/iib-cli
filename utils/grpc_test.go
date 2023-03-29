@@ -35,13 +35,14 @@ func setIIB() {
 }
 
 func start() {
+	GrpcStopSafely()
 	setIIB()
 	GrpcStartSafely()
 }
 
 func clean() {
 	os.Unsetenv("IIB")
-	GrpcStop()
+	GrpcStopSafely()
 }
 
 func TestGrpcConstants(t *testing.T) {

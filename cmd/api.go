@@ -15,8 +15,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var output string
-
 // apiCmd represents the api command
 var apiCmd = &cobra.Command{
 	Use:   "api",
@@ -33,12 +31,12 @@ Examples:
 func apiRunE(cmd *cobra.Command, args []string) error {
 	err := utils.GrpcStartSafely()
 	if err != nil {
-		return apiExitE(err)
+		return exitE(err)
 	}
 	if len(args) == 0 {
 		table, json, err := listApi()
 		if err != nil {
-			return apiExitE(err)
+			return exitE(err)
 		}
 		if output == "json" {
 			fmt.Println(json)
@@ -48,16 +46,11 @@ func apiRunE(cmd *cobra.Command, args []string) error {
 	} else {
 		out, err := utils.GrpcExec(utils.GrpcArgApi("describe " + args[0]))
 		if err != nil {
-			apiExitE(err)
+			exitE(err)
 		}
 		fmt.Println(out)
 	}
-	return apiExitE(nil)
-}
-
-func apiExitE(err error) error {
-	utils.GrpcStop()
-	return err
+	return exitE(nil)
 }
 
 func init() {
@@ -68,7 +61,6 @@ func init() {
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
 	// apiCmd.PersistentFlags().String("foo", "", "A help for foo")
-	apiCmd.PersistentFlags().StringVarP(&output, "output", "o", "text", "Output format")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:

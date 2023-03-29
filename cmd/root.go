@@ -4,8 +4,13 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"bytes"
+	"fmt"
 	"os"
+	"strings"
 
+	"github.com/apodhrad/iib-cli/utils"
+	"github.com/rodaine/table"
 	"github.com/spf13/cobra"
 )
 
@@ -34,14 +39,36 @@ func Execute() {
 	}
 }
 
+var output string
+
 func init() {
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
 	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.iib-cli.yaml)")
+	rootCmd.PersistentFlags().StringVarP(&output, "output", "o", "text", "Output format")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
+
+func exitE(err error) error {
+	utils.GrpcStopSafely()
+	return err
+}
+
+func NewTable(headers ...string) table.Table {
+	table.DefaultHeaderFormatter = func(format string, vals ...interface{}) string {
+		return strings.ToUpper(fmt.Sprintf(format, vals...))
+	}
+	return table.New(headers)
+}
+
+func TableToString(tbl table.Table) string {
+	var tblBuf bytes.Buffer
+	tbl.WithWriter(&tblBuf)
+	tbl.Print()
+	return tblBuf.String()
 }

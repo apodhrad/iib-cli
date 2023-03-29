@@ -95,6 +95,19 @@ func GrpcStop() error {
 	return err
 }
 
+func GrpcStopSafely() error {
+	GrpcStop()
+	time.Sleep(2 * time.Second)
+	status, err := GrpcStatus()
+	if err != nil {
+		return err
+	}
+	if status != "" {
+		return errors.New("Server was not stopped properly. Status: " + status)
+	}
+	return err
+}
+
 func GrpcStatus() (string, error) {
 	cmd := exec.Command("podman", "ps", "--format", "{{.Status}}", "-f", "name="+GRPC_NAME)
 	out, err := cmd.Output()
