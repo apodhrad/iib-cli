@@ -5,6 +5,7 @@ import (
 	"errors"
 	"os"
 	"os/exec"
+	"regexp"
 	"strings"
 	"time"
 )
@@ -61,59 +62,82 @@ func GrpcStart() error {
 }
 
 func GrpcStartSafely() error {
-	status, err := GrpcStatus()
+	var err error
+	var out string
+	var status string
+
+	status, err = GrpcStatus()
 	if err != nil {
 		return err
 	}
-	if status != "" {
+	regex := regexp.MustCompile("^Up")
+	if regex.MatchString(status) {
 		// ok, the server is already started
 		return nil
 	}
 
-	for i := 0; i < 3; i++ {
-		// make sure there is no stopped container
-		GrpcStopSafely()
-		// now we can start a new container
-		err = GrpcStart()
+	err = GrpcStopSafely()
+	if err != nil {
+		return err
+	}
+
+	err = GrpcStart()
+	if err != nil {
+		return err
+	}
+
+	for i := 0; i < 10; i++ {
+		time.Sleep(2 * time.Second)
+		status, err = GrpcStatus()
 		if err != nil {
 			return err
 		}
-		for j := 0; j < 3; j++ {
+		if regex.MatchString(status) {
+			out, err = GrpcExec(GrpcArgApi("list"))
+			if err != nil && out != "" {
+				// ok, the server is up and responding
+				return nil
+			}
+		}
+	}
+
+	return errors.New("Server was not started properly. Status: " + status)
+}
+
+func GrpcStop() (string, error) {
+	cmd := exec.Command("podman", "rm", "-f", "-i", GRPC_NAME)
+	out, err := cmd.Output()
+	return string(out), err
+}
+
+func GrpcStopSafely() error {
+	var err error
+	var out string
+	var status string
+
+	out, err = GrpcStop()
+	if err != nil {
+		return err
+	}
+	if out != "" {
+		for i := 0; i < 10; i++ {
 			time.Sleep(2 * time.Second)
 			status, err = GrpcStatus()
 			if err != nil {
 				return err
 			}
-			if status != "" {
-				// ok, the server is properly started
+			if status == "" {
 				return nil
 			}
 		}
-	}
-	return errors.New("Server was not started properly. Status: " + status)
-}
-
-func GrpcStop() error {
-	cmd := exec.Command("podman", "rm", GRPC_NAME, "-f", "-i")
-	err := cmd.Run()
-	return err
-}
-
-func GrpcStopSafely() error {
-	GrpcStop()
-	time.Sleep(2 * time.Second)
-	status, err := GrpcStatus()
-	if err != nil {
-		return err
-	}
-	if status != "" {
 		return errors.New("Server was not stopped properly. Status: " + status)
 	}
-	return err
+
+	return nil
 }
 
 func GrpcStatus() (string, error) {
-	cmd := exec.Command("podman", "ps", "--format", "{{.Status}}", "-f", "name="+GRPC_NAME)
+	cmd := exec.Command("podman", "ps", "-a", "--format", "{{.Status}}", "-f", "name="+GRPC_NAME)
 	out, err := cmd.Output()
 	var status string = string(out)
 	status = strings.Replace(status, "\n", "", -1)

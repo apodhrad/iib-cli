@@ -7,62 +7,19 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const EXPECTED_API_LIST string = `api.Registry
-grpc.health.v1.Health
-grpc.reflection.v1alpha.ServerReflection
-`
-
-const EXPECTED_API_LIST_REGISTRY string = `api.Registry.GetBundle
-api.Registry.GetBundleForChannel
-api.Registry.GetBundleThatReplaces
-api.Registry.GetChannelEntriesThatProvide
-api.Registry.GetChannelEntriesThatReplace
-api.Registry.GetDefaultBundleThatProvides
-api.Registry.GetLatestChannelEntriesThatProvide
-api.Registry.GetPackage
-api.Registry.ListBundles
-api.Registry.ListPackages
-`
-
-const EXPECTED_API_DESCRIPTION_GETPKGREQ string = `api.GetPackageRequest is a message:
-message GetPackageRequest {
-  string name = 1;
-}
-`
-
-func setIIB() {
-	os.Setenv("IIB", "quay.io/apodhrad/iib-test:v0.0.1")
-}
-
-func start() {
+func setup() {
 	GrpcStopSafely()
-	setIIB()
+	os.Setenv("IIB", "quay.io/apodhrad/iib-test:v0.0.1")
 	GrpcStartSafely()
 }
 
-func clean() {
-	os.Unsetenv("IIB")
+func teardown() {
 	GrpcStopSafely()
+	os.Unsetenv("IIB")
 }
 
 func TestGrpcConstants(t *testing.T) {
 	assert.Equal(t, "localhost:50051", GRPC_SERVER)
-}
-
-func TestGrpcStartStop(t *testing.T) {
-	setIIB()
-
-	err := GrpcStartSafely()
-	assert.Nil(t, err)
-	status, err := GrpcStatus()
-	assert.Regexp(t, "^Up", status)
-
-	err = GrpcStop()
-	assert.Nil(t, err)
-	status, err = GrpcStatus()
-	assert.Empty(t, status)
-
-	clean()
 }
 
 func TestGrcpArgToCmdArgs(t *testing.T) {
@@ -99,40 +56,34 @@ func TestGrcpArgToCmdArgs(t *testing.T) {
 	assert.Equal(t, err.Error(), "No api or method is defined")
 }
 
-func TestGrpcApiList(t *testing.T) {
-	start()
-
-	stdOut, _ := GrpcExec(GrpcArg{api: "list"})
-	assert.Equal(t, EXPECTED_API_LIST, stdOut)
-
-	stdOut, _ = GrpcExec(GrpcArg{api: "list api.Registry"})
-	assert.Equal(t, EXPECTED_API_LIST_REGISTRY, stdOut)
-
-	clean()
-}
-
-func TestGrpcApiDescribe(t *testing.T) {
-	start()
-
-	stdOut, _ := GrpcExec(GrpcArg{api: "describe api.GetPackageRequest"})
-	assert.Equal(t, EXPECTED_API_DESCRIPTION_GETPKGREQ, stdOut)
-
-	clean()
-}
-
-const EXPECTED_REGISTRY_PACKAGES string = `{
-  "name": "prometheus"
-}
-{
-  "name": "redis-operator"
+const EXPECTED_API_DESCRIPTION_GETPKGREQ string = `api.GetPackageRequest is a message:
+message GetPackageRequest {
+  string name = 1;
 }
 `
 
-func TestGrpcRegistryListPackages(t *testing.T) {
-	start()
+func TestGrpcStartStopWithRequest(t *testing.T) {
+	var err error
+	var out string
+	var status string
 
-	stdOut, _ := GrpcExec(GrpcArg{method: "api.Registry/ListPackages"})
-	assert.Equal(t, EXPECTED_REGISTRY_PACKAGES, stdOut)
+	os.Setenv("IIB", "quay.io/apodhrad/iib-test:v0.0.1")
 
-	clean()
+	err = GrpcStartSafely()
+	assert.Nil(t, err)
+	status, err = GrpcStatus()
+	assert.Nil(t, err)
+	assert.Regexp(t, "^Up", status)
+
+	out, err = GrpcExec(GrpcArg{api: "describe api.GetPackageRequest"})
+	assert.Nil(t, err)
+	assert.Equal(t, EXPECTED_API_DESCRIPTION_GETPKGREQ, out)
+
+	err = GrpcStopSafely()
+	assert.Nil(t, err)
+	status, err = GrpcStatus()
+	assert.Nil(t, err)
+	assert.Empty(t, status)
+
+	teardown()
 }

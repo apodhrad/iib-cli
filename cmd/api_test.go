@@ -1,10 +1,8 @@
 package cmd
 
 import (
-	"os"
 	"testing"
 
-	"github.com/apodhrad/iib-cli/utils"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -24,12 +22,11 @@ grpc.reflection.v1alpha.ServerReflection  grpc.reflection.v1alpha.ServerReflecti
 `
 
 func TestListApi(t *testing.T) {
-	utils.GrpcStartSafely()
-
-	os.Setenv("IIB", "quay.io/apodhrad/iib-test:v0.0.1")
-	utils.GrpcStartSafely()
+	setup()
 
 	table, _, err := listApi()
 	assert.Nil(t, err)
 	assert.Equal(t, EXPECTED_API_LIST_TEXT, table)
+
+	teardown()
 }
