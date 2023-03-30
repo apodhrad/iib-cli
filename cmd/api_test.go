@@ -6,7 +6,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const EXPECTED_API_LIST_TEXT string = `SERVICE                                   METHOD                                                         
+var EXPECTED_SERVICES []Service = []Service{
+	{Name: "api.Registry", Methods: []string{"api.Registry.GetBundle", "api.Registry.GetBundleForChannel", "api.Registry.GetBundleThatReplaces", "api.Registry.GetChannelEntriesThatProvide", "api.Registry.GetChannelEntriesThatReplace", "api.Registry.GetDefaultBundleThatProvides", "api.Registry.GetLatestChannelEntriesThatProvide", "api.Registry.GetPackage", "api.Registry.ListBundles", "api.Registry.ListPackages"}},
+	{Name: "grpc.health.v1.Health", Methods: []string{"grpc.health.v1.Health.Check"}},
+	{Name: "grpc.reflection.v1alpha.ServerReflection", Methods: []string{"grpc.reflection.v1alpha.ServerReflection.ServerReflectionInfo"}},
+}
+
+const EXPECTED_SERVICES_TEXT_OUTPUT string = `SERVICE                                   METHOD                                                         
 api.Registry                              api.Registry.GetBundle                                         
 api.Registry                              api.Registry.GetBundleForChannel                               
 api.Registry                              api.Registry.GetBundleThatReplaces                             
@@ -21,12 +27,18 @@ grpc.health.v1.Health                     grpc.health.v1.Health.Check
 grpc.reflection.v1alpha.ServerReflection  grpc.reflection.v1alpha.ServerReflection.ServerReflectionInfo  
 `
 
-func TestListApi(t *testing.T) {
+func TestApiCmdGetServices(t *testing.T) {
 	setup()
 
-	table, _, err := listApi()
+	services, err := apiCmdGetServices()
 	assert.Nil(t, err)
-	assert.Equal(t, EXPECTED_API_LIST_TEXT, table)
+	assert.Equal(t, EXPECTED_SERVICES, services)
 
 	teardown()
+}
+
+func TestApiCmdToText(t *testing.T) {
+	out, err := apiCmdToText(EXPECTED_SERVICES)
+	assert.Nil(t, err)
+	assert.Equal(t, EXPECTED_SERVICES_TEXT_OUTPUT, out)
 }

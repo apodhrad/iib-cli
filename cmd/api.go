@@ -5,13 +5,11 @@ package cmd
 
 import (
 	"bufio"
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"strings"
 
 	"github.com/apodhrad/iib-cli/utils"
-	"github.com/rodaine/table"
 	"github.com/spf13/cobra"
 )
 
@@ -25,32 +23,7 @@ Examples:
   iib-cli api
   iib-cli api api.Registry/ListPackages
 `,
-	RunE: apiRunE,
-}
-
-func apiRunE(cmd *cobra.Command, args []string) error {
-	err := utils.GrpcStartSafely()
-	if err != nil {
-		return exitE(err)
-	}
-	if len(args) == 0 {
-		table, json, err := listApi()
-		if err != nil {
-			return exitE(err)
-		}
-		if output == "json" {
-			fmt.Println(json)
-		} else {
-			fmt.Println(table)
-		}
-	} else {
-		out, err := utils.GrpcExec(utils.GrpcArgApi("describe " + args[0]))
-		if err != nil {
-			exitE(err)
-		}
-		fmt.Println(out)
-	}
-	return exitE(nil)
+	RunE: apiCmdRunE,
 }
 
 func init() {
@@ -67,47 +40,72 @@ func init() {
 	// apiCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-type Service struct {
-	Name    string
-	Methods []string
+func apiCmdRunE(cmd *cobra.Command, args []string) error {
+	var err error
+	var out string
+	var services []Service
+
+	if len(args) == 0 {
+		services, err = apiCmdGetServices()
+		if err == nil {
+			if output == "json" {
+				apiCmdToJson(services)
+			} else {
+				apiCmdToText(services)
+			}
+		}
+	} else {
+		out, err = utils.GrpcExec(utils.GrpcArgApi("describe " + args[0]))
+		if err == nil {
+			fmt.Println(out)
+		}
+	}
+	return err
 }
 
-func listApi() (tblOut string, jsonOut string, err error) {
+func apiCmdGetServices() ([]Service, error) {
+	var services []Service
+
+	utils.GrpcStartSafely()
+
 	out, err := utils.GrpcExec(utils.GrpcArgApi("list"))
 	if err != nil {
-		return "", "", err
+		return services, err
 	}
-
-	table.DefaultHeaderFormatter = func(format string, vals ...interface{}) string {
-		return strings.ToUpper(fmt.Sprintf(format, vals...))
-	}
-
-	tbl := table.New("Service", "Method")
-	services := []Service{}
 
 	serviceScanner := bufio.NewScanner(strings.NewReader(out))
 	for serviceScanner.Scan() {
 		serviceName := serviceScanner.Text()
 		service := Service{Name: serviceName}
 
-		out2, err := utils.GrpcExec(utils.GrpcArgApi("list " + serviceName))
+		out, err = utils.GrpcExec(utils.GrpcArgApi("list " + serviceName))
 		if err != nil {
-			return "", "", err
+			return services, err
 		}
-		methodScanner := bufio.NewScanner(strings.NewReader(out2))
+		methodScanner := bufio.NewScanner(strings.NewReader(out))
 		for methodScanner.Scan() {
 			method := methodScanner.Text()
 			service.Methods = append(service.Methods, method)
-			tbl.AddRow(serviceName, method)
 		}
 		services = append(services, service)
 	}
 
-	// b := new(bytes.Buffer)
-	var tblBuf bytes.Buffer
-	tbl.WithWriter(&tblBuf)
-	tbl.Print()
+	utils.GrpcStopSafely()
 
-	json, err := json.Marshal(services)
-	return tblBuf.String(), string(json), err
+	return services, err
+}
+
+func apiCmdToText(services []Service) (string, error) {
+	tbl := NewTable("Service", "Method")
+	for _, service := range services {
+		for _, method := range service.Methods {
+			tbl.AddRow(service.Name, method)
+		}
+	}
+	return TableToString(tbl), nil
+}
+
+func apiCmdToJson(services []Service) (string, error) {
+	out, err := json.Marshal(services)
+	return string(out), err
 }

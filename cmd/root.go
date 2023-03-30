@@ -9,7 +9,6 @@ import (
 	"os"
 	"strings"
 
-	"github.com/apodhrad/iib-cli/utils"
 	"github.com/rodaine/table"
 	"github.com/spf13/cobra"
 )
@@ -54,9 +53,16 @@ func init() {
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func exitE(err error) error {
-	utils.GrpcStopSafely()
-	return err
+func check(e error) {
+	if e != nil {
+		panic(e)
+	}
+}
+
+func readFile(file string) string {
+	data, err := os.ReadFile(file)
+	check(err)
+	return string(data)
 }
 
 func NewTable(headers ...string) table.Table {

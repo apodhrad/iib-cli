@@ -59,7 +59,7 @@ func packageRunE(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	return exitE(err)
+	return err
 }
 
 func packageCmdGrpc(name string) (string, error) {

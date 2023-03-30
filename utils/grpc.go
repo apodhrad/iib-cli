@@ -94,7 +94,7 @@ func GrpcStartSafely() error {
 		}
 		if regex.MatchString(status) {
 			out, err = GrpcExec(GrpcArgApi("list"))
-			if err != nil && out != "" {
+			if err == nil && out != "" {
 				// ok, the server is up and responding
 				return nil
 			}
