@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/apodhrad/iib-cli/utils"
+	"github.com/apodhrad/iib-cli/grpc"
 	"github.com/spf13/cobra"
 )
 
@@ -60,11 +60,11 @@ func packagesCmdGrpc() (string, error) {
 	var err error
 	var out string
 
-	utils.GrpcStart()
+	grpc.GrpcStart()
 	method := "api.Registry/ListPackages"
-	grpcArg := utils.GrpcArgMethod(method)
-	out, err = utils.GrpcExec(grpcArg)
-	utils.GrpcStop()
+	grpcArg := grpc.GrpcArgMethod(method)
+	out, err = grpc.GrpcExec(grpcArg)
+	grpc.GrpcStop()
 	return out, err
 }
 

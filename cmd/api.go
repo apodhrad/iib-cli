@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/apodhrad/iib-cli/utils"
+	"github.com/apodhrad/iib-cli/grpc"
 	"github.com/spf13/cobra"
 )
 
@@ -56,14 +56,14 @@ func apiCmdRunE(cmd *cobra.Command, args []string) error {
 			fmt.Println(out)
 		}
 	} else {
-		utils.GrpcStart()
+		grpc.GrpcStart()
 
-		out, err = utils.GrpcExec(utils.GrpcArgApi("describe " + args[0]))
+		out, err = grpc.GrpcExec(grpc.GrpcArgApi("describe " + args[0]))
 		if err == nil {
 			fmt.Println(out)
 		}
 
-		utils.GrpcStart()
+		grpc.GrpcStart()
 	}
 	return err
 }
@@ -73,9 +73,9 @@ func apiCmdGetServices() ([]Service, error) {
 	var out string
 	var services []Service
 
-	utils.GrpcStart()
+	grpc.GrpcStart()
 
-	out, err = utils.GrpcExec(utils.GrpcArgApi("list"))
+	out, err = grpc.GrpcExec(grpc.GrpcArgApi("list"))
 	if err != nil {
 		return services, err
 	}
@@ -85,7 +85,7 @@ func apiCmdGetServices() ([]Service, error) {
 		serviceName := serviceScanner.Text()
 		service := Service{Name: serviceName}
 
-		out, err = utils.GrpcExec(utils.GrpcArgApi("list " + serviceName))
+		out, err = grpc.GrpcExec(grpc.GrpcArgApi("list " + serviceName))
 		if err != nil {
 			return services, err
 		}
@@ -97,7 +97,7 @@ func apiCmdGetServices() ([]Service, error) {
 		services = append(services, service)
 	}
 
-	utils.GrpcStop()
+	grpc.GrpcStop()
 
 	return services, err
 }
