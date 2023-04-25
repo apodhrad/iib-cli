@@ -7,14 +7,13 @@ import (
 )
 
 func TestBundleCmdGprc(t *testing.T) {
-	setup()
+	setTestIIB(t)
+	defer stopTestGrpc(t)
 
 	out, err := bundleCmdGrpc("redis-operator.v0.8.0", "redis-operator", "stable")
 	assert.Nil(t, err)
 	expected := readFile("bundle.json")
 	assert.Equal(t, expected, out)
-
-	teardown()
 }
 
 var EXPECTED_BUNDLE = Bundle{

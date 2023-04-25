@@ -32,13 +32,12 @@ const EXPECTED_PACKAGE_REDIS_GRPC_OUTPUT string = `{
 // }
 
 func TestPackageCmdGrpc(t *testing.T) {
-	setup()
+	setTestIIB(t)
+	defer stopTestGrpc(t)
 
 	out, err := packageCmdGrpc("redis-operator")
 	assert.Nil(t, err)
 	assert.Equal(t, EXPECTED_PACKAGE_REDIS_GRPC_OUTPUT, out)
-
-	teardown()
 }
 
 var EXPETED_PACKAGE_REDIS Package = Package{Name: "redis-operator", Channels: []Channel{{Name: "preview", CsvName: "redis-operator.v0.4.0"}, {Name: "stable", CsvName: "redis-operator.v0.13.0"}}, DefaultChannelName: "stable"}

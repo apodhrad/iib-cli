@@ -15,13 +15,12 @@ const EXPECTED_PACKAGES_GRPC_OUTPUT string = `{
 `
 
 func TestPackagesCmdGrpc(t *testing.T) {
-	setup()
+	setTestIIB(t)
+	defer stopTestGrpc(t)
 
 	out, err := packagesCmdGrpc()
 	assert.Nil(t, err)
 	assert.Equal(t, EXPECTED_PACKAGES_GRPC_OUTPUT, out)
-
-	teardown()
 }
 
 var EXPECTED_PACKAGES []Package = []Package{{Name: "prometheus"}, {Name: "redis-operator"}}

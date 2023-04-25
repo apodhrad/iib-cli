@@ -66,14 +66,12 @@ func packageCmdGrpc(name string) (string, error) {
 	var err error
 	var out string
 
-	err = utils.GrpcStartSafely()
-	if err == nil {
-		method := "api.Registry/GetPackage"
-		data := fmt.Sprintf(`{"name":"%s"}`, name)
-		grpcArg := utils.GrpcArgMethodWithData(method, data)
-		out, err = utils.GrpcExec(grpcArg)
-	}
-	utils.GrpcStopSafely()
+	utils.GrpcStart()
+	method := "api.Registry/GetPackage"
+	data := fmt.Sprintf(`{"name":"%s"}`, name)
+	grpcArg := utils.GrpcArgMethodWithData(method, data)
+	out, err = utils.GrpcExec(grpcArg)
+	utils.GrpcStop()
 	return out, err
 }
 

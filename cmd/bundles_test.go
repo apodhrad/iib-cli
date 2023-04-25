@@ -7,14 +7,13 @@ import (
 )
 
 func TestBundlesCmdGprc(t *testing.T) {
-	setup()
+	setTestIIB(t)
+	defer stopTestGrpc(t)
 
 	out, err := bundlesCmdGrpc()
 	assert.Nil(t, err)
 	expected := readFile("bundles.json")
 	assert.Equal(t, expected, out)
-
-	teardown()
 }
 
 var EXPECTED_BUNDLE_PROMETHEUS Bundle = Bundle{

@@ -64,14 +64,12 @@ func bundleCmdGrpc(csv string, pkg string, channel string) (string, error) {
 	var err error
 	var out string
 
-	err = utils.GrpcStartSafely()
-	if err == nil {
-		method := "api.Registry/GetBundle"
-		data := fmt.Sprintf(`{"csvName":"%s","pkgName":"%s","channelName":"%s"}`, csv, pkg, channel)
-		grpcArg := utils.GrpcArgMethodWithData(method, data)
-		out, err = utils.GrpcExec(grpcArg)
-	}
-	utils.GrpcStopSafely()
+	utils.GrpcStart()
+	method := "api.Registry/GetBundle"
+	data := fmt.Sprintf(`{"csvName":"%s","pkgName":"%s","channelName":"%s"}`, csv, pkg, channel)
+	grpcArg := utils.GrpcArgMethodWithData(method, data)
+	out, err = utils.GrpcExec(grpcArg)
+	utils.GrpcStop()
 	return out, err
 }
 

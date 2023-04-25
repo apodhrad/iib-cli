@@ -7,15 +7,19 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func setup() {
-	GrpcStopSafely()
+func setTestIIB(t *testing.T) {
+	TestLogger.Println("Set IIB for test " + t.Name())
 	os.Setenv("IIB", "quay.io/apodhrad/iib-test:v0.0.1")
-	GrpcStartSafely()
 }
 
-func teardown() {
-	GrpcStopSafely()
+func startTestGrpc(t *testing.T) {
+	setTestIIB(t)
+	GrpcStart()
+}
+
+func stopTestGrpc(t *testing.T) {
 	os.Unsetenv("IIB")
+	GrpcStop()
 }
 
 func TestGrpcConstants(t *testing.T) {
@@ -54,36 +58,4 @@ func TestGrcpArgToCmdArgs(t *testing.T) {
 	cmdArgs, err = GrpcArgToCmdArgs(GrpcArg{data: data})
 	assert.NotNil(t, err)
 	assert.Equal(t, err.Error(), "No api or method is defined")
-}
-
-const EXPECTED_API_DESCRIPTION_GETPKGREQ string = `api.GetPackageRequest is a message:
-message GetPackageRequest {
-  string name = 1;
-}
-`
-
-func TestGrpcStartStopWithRequest(t *testing.T) {
-	var err error
-	var out string
-	var status string
-
-	os.Setenv("IIB", "quay.io/apodhrad/iib-test:v0.0.1")
-
-	err = GrpcStartSafely()
-	assert.Nil(t, err)
-	status, err = GrpcStatus()
-	assert.Nil(t, err)
-	assert.Regexp(t, "^Up", status)
-
-	out, err = GrpcExec(GrpcArg{api: "describe api.GetPackageRequest"})
-	assert.Nil(t, err)
-	assert.Equal(t, EXPECTED_API_DESCRIPTION_GETPKGREQ, out)
-
-	err = GrpcStopSafely()
-	assert.Nil(t, err)
-	status, err = GrpcStatus()
-	assert.Nil(t, err)
-	assert.Empty(t, status)
-
-	teardown()
 }

@@ -56,20 +56,14 @@ func apiCmdRunE(cmd *cobra.Command, args []string) error {
 			fmt.Println(out)
 		}
 	} else {
-		err = utils.GrpcStartSafely()
-		if err != nil {
-			return err
-		}
+		utils.GrpcStart()
 
 		out, err = utils.GrpcExec(utils.GrpcArgApi("describe " + args[0]))
 		if err == nil {
 			fmt.Println(out)
 		}
 
-		err = utils.GrpcStartSafely()
-		if err != nil {
-			return err
-		}
+		utils.GrpcStart()
 	}
 	return err
 }
@@ -79,10 +73,7 @@ func apiCmdGetServices() ([]Service, error) {
 	var out string
 	var services []Service
 
-	err = utils.GrpcStartSafely()
-	if err != nil {
-		return services, err
-	}
+	utils.GrpcStart()
 
 	out, err = utils.GrpcExec(utils.GrpcArgApi("list"))
 	if err != nil {
@@ -106,7 +97,7 @@ func apiCmdGetServices() ([]Service, error) {
 		services = append(services, service)
 	}
 
-	utils.GrpcStopSafely()
+	utils.GrpcStop()
 
 	return services, err
 }

@@ -60,13 +60,11 @@ func bundlesCmdGrpc() (string, error) {
 	var err error
 	var out string
 
-	err = utils.GrpcStartSafely()
-	if err == nil {
-		method := "api.Registry/ListBundles"
-		grpcArg := utils.GrpcArgMethod(method)
-		out, err = utils.GrpcExec(grpcArg)
-	}
-	utils.GrpcStopSafely()
+	utils.GrpcStart()
+	method := "api.Registry/ListBundles"
+	grpcArg := utils.GrpcArgMethod(method)
+	out, err = utils.GrpcExec(grpcArg)
+	utils.GrpcStop()
 	return out, err
 }
 

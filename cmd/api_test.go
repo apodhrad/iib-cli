@@ -28,13 +28,12 @@ grpc.reflection.v1alpha.ServerReflection  grpc.reflection.v1alpha.ServerReflecti
 `
 
 func TestApiCmdGetServices(t *testing.T) {
-	setup()
+	setTestIIB(t)
+	defer stopTestGrpc(t)
 
 	services, err := apiCmdGetServices()
 	assert.Nil(t, err)
 	assert.Equal(t, EXPECTED_SERVICES, services)
-
-	teardown()
 }
 
 func TestApiCmdToText(t *testing.T) {
