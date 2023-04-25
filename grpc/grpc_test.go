@@ -1,11 +1,26 @@
 package grpc
 
 import (
+	"log"
 	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
+
+var (
+	TestLogger *log.Logger
+)
+
+func init() {
+	logFile := "/tmp/logs.txt"
+	file, err := os.OpenFile(logFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	TestLogger = log.New(file, "TEST: ", log.Ldate|log.Ltime|log.Lshortfile)
+}
 
 func setTestIIB(t *testing.T) {
 	TestLogger.Println("Set IIB for test " + t.Name())
