@@ -3,32 +3,14 @@ package grpc
 import (
 	"bytes"
 	"errors"
-	"log"
+	"fmt"
 	"os"
 	"os/exec"
 	"strings"
 	"time"
+
+	"github.com/apodhrad/iib-cli/logging"
 )
-
-var (
-	DebugLogger   *log.Logger
-	InfoLogger    *log.Logger
-	WarningLogger *log.Logger
-	ErrorLogger   *log.Logger
-)
-
-func init() {
-	logFile := "/tmp/logs.txt"
-	file, err := os.OpenFile(logFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	DebugLogger = log.New(file, "DEBUG: ", log.Ldate|log.Ltime|log.Lshortfile)
-	InfoLogger = log.New(file, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
-	WarningLogger = log.New(file, "WARNING: ", log.Ldate|log.Ltime|log.Lshortfile)
-	ErrorLogger = log.New(file, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
-}
 
 const GRPC_NAME string = "iib_registry_server"
 const GRPC_HOST string = "localhost"
@@ -74,44 +56,44 @@ func GrpcStart() {
 	// check is iib was specified
 	iib := os.Getenv("IIB")
 	if iib == "" {
-		ErrorLogger.Panicln("Specify index image via envvar IIB or via command set iib!")
+		handlePanic(fmt.Errorf("Specify index image via envvar IIB or via command set iib!"))
 	}
 
 	// make sure there is no running container before starting a new one
-	InfoLogger.Println("Make sure there is no running container")
+	logging.INFO().Printf("Make sure there is no running container")
 	GrpcStop()
 
 	// pull the index image bundle (iib)
-	InfoLogger.Printf("Pull image %s\n", iib)
+	logging.INFO().Printf("Pull image %s\n", iib)
 	err := DockerPullImage(iib)
 	if err != nil {
-		ErrorLogger.Panicln(err)
+		handlePanic(err)
 	}
 
 	// now, we can start the new container
-	InfoLogger.Println("Start grpc server on localhost:" + GRPC_PORT)
+	logging.INFO().Printf("Start grpc server on localhost:" + GRPC_PORT)
 	id, err := DockerStartContainer(GRPC_NAME, iib, GRPC_PORT+":"+GRPC_PORT)
 	if err != nil {
-		ErrorLogger.Panicln(err)
+		handlePanic(err)
 	}
-	InfoLogger.Printf("Container wit ID %s was sucesfully started", id)
+	logging.INFO().Printf("Container wit ID %s was sucesfully started", id)
 
 	// the container should be running, now wait for its readiness
-	InfoLogger.Println("Wait for its readiness")
+	logging.INFO().Printf("Wait for its readiness")
 	err = waitForResponse()
 	if err != nil {
-		ErrorLogger.Panicln(err)
+		handlePanic(err)
 	}
-	InfoLogger.Println("The grpc server is up and running on localhost:" + GRPC_PORT)
+	logging.INFO().Printf("The grpc server is up and running on localhost:" + GRPC_PORT)
 }
 
 func GrpcStop() {
-	InfoLogger.Println("Stop grpc server")
+	logging.INFO().Printf("Stop grpc server")
 	err := DockerStopContainer(GRPC_NAME)
 	if err != nil {
-		ErrorLogger.Panicln(err)
+		handlePanic(err)
 	}
-	InfoLogger.Println("The grpc server is stopped")
+	logging.INFO().Printf("The grpc server is stopped")
 }
 
 func GrpcExec(grpcArg GrpcArg) (string, error) {
@@ -140,4 +122,9 @@ func waitForResponse() error {
 		time.Sleep(1 * time.Second)
 	}
 	return err
+}
+
+func handlePanic(err error) {
+	logging.ERROR().Println(err)
+	panic(err)
 }
