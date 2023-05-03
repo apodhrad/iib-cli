@@ -4,10 +4,9 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
-	"strings"
 
+	"github.com/apodhrad/iib-cli/format"
 	"github.com/apodhrad/iib-cli/grpc"
 	"github.com/spf13/cobra"
 )
@@ -17,7 +16,12 @@ var packagesCmd = &cobra.Command{
 	Use:   "packages",
 	Short: "List all packages",
 	Long:  `List all packages`,
-	RunE:  packagesCmdRunE,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		funcArgs := PackagesCmdArgs{Output: output}
+		out, err := packagesCmdFunc(funcArgs)
+		fmt.Println(out)
+		return err
+	},
 }
 
 func init() {
@@ -34,61 +38,30 @@ func init() {
 	// packagesCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func packagesCmdRunE(cmd *cobra.Command, args []string) error {
-	var err error
-	var out string
-	var packages []Package
+type PackagesCmdArgs struct {
+	Output string
+}
 
-	out, err = packagesCmdGrpc()
-	if err == nil {
-		packages, err = packagesCmdUnmarshal(out)
-		if err == nil {
-			if output == "json" {
-				out, err = packagesCmdToJson(packages)
-			} else {
-				out, err = packagesCmdToText(packages)
-			}
-			if err == nil {
-				fmt.Println(out)
-			}
+func packagesCmdFunc(args PackagesCmdArgs) (string, error) {
+	var out string
+	var err error
+
+	address := grpc.GrpcStart()
+	client, err := grpc.NewClient(address)
+	packageNames, err := client.GetPackageNames()
+
+	if args.Output == "json" {
+		out, err = format.Json(packageNames, true)
+	} else {
+		data := [][]string{}
+		// headers
+		data = append(data, []string{"PACKAGE_NAME"})
+		// items
+		for _, packageName := range packageNames {
+			data = append(data, []string{packageName.Name})
 		}
+		out, err = format.Table(data)
 	}
-	return err
-}
 
-func packagesCmdGrpc() (string, error) {
-	var err error
-	var out string
-
-	grpc.GrpcStart()
-	method := "api.Registry/ListPackages"
-	grpcArg := grpc.GrpcArgMethod(method)
-	out, err = grpc.GrpcExec(grpcArg)
-	grpc.GrpcStop()
 	return out, err
-}
-
-func packagesCmdUnmarshal(input string) ([]Package, error) {
-	// grpcurl produces improper json array
-	// so, we will fix it to a proper json array
-	numOfPackages := strings.Count(input, "}")
-	input = strings.Replace(input, "}", "},", numOfPackages-1)
-	input = "[" + input + "]"
-	// now, we can unmarshal
-	var packages []Package
-	err := json.Unmarshal([]byte(input), &packages)
-	return packages, err
-}
-
-func packagesCmdToText(packages []Package) (string, error) {
-	tbl := NewTable("Package")
-	for _, value := range packages {
-		tbl.AddRow(value.Name)
-	}
-	return TableToString(tbl), nil
-}
-
-func packagesCmdToJson(packages []Package) (string, error) {
-	out, err := json.Marshal(packages)
-	return string(out), err
 }

@@ -52,7 +52,7 @@ func GrpcArgToCmdArgs(grpcArg GrpcArg) ([]string, error) {
 	return cmdArgs, nil
 }
 
-func GrpcStart() {
+func GrpcStart() string {
 	// check is iib was specified
 	iib := os.Getenv("IIB")
 	if iib == "" {
@@ -85,6 +85,7 @@ func GrpcStart() {
 		handlePanic(err)
 	}
 	logging.INFO().Printf("The grpc server is up and running on localhost:" + GRPC_PORT)
+	return GRPC_HOST + ":" + GRPC_PORT
 }
 
 func GrpcStop() {

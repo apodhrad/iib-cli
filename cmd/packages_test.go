@@ -6,38 +6,36 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const EXPECTED_PACKAGES_GRPC_OUTPUT string = `{
-  "name": "prometheus"
-}
-{
-  "name": "redis-operator"
-}
-`
+const EXPECTED_PACKAGES_JSON string = `[
+  {
+    "name": "prometheus"
+  },
+  {
+    "name": "redis-operator"
+  }
+]`
 
-func TestPackagesCmdGrpc(t *testing.T) {
-	setTestIIB(t)
-	defer stopTestGrpc(t)
-
-	out, err := packagesCmdGrpc()
-	assert.Nil(t, err)
-	assert.Equal(t, EXPECTED_PACKAGES_GRPC_OUTPUT, out)
-}
-
-var EXPECTED_PACKAGES []Package = []Package{{Name: "prometheus"}, {Name: "redis-operator"}}
-
-func TestPackagesCmdUnmarshal(t *testing.T) {
-	packages, err := packagesCmdUnmarshal(EXPECTED_PACKAGES_GRPC_OUTPUT)
-	assert.Nil(t, err)
-	assert.Equal(t, EXPECTED_PACKAGES, packages)
-}
-
-const EXPECTED_PACKAGES_TEST_OUTPUT string = `PACKAGE         
+const EXPECTED_PACKAGES_TEXT string = `PACKAGE_NAME    
 prometheus      
 redis-operator  
 `
 
-func TestPackagesCmdToText(t *testing.T) {
-	out, err := packagesCmdToText(EXPECTED_PACKAGES)
+func TestPackagesCmdJson(t *testing.T) {
+	setTestIIB(t)
+	defer stopTestGrpc(t)
+
+	funcArgs := PackagesCmdArgs{Output: "json"}
+	out, err := packagesCmdFunc(funcArgs)
 	assert.Nil(t, err)
-	assert.Equal(t, EXPECTED_PACKAGES_TEST_OUTPUT, out)
+	assert.Equal(t, EXPECTED_PACKAGES_JSON, out)
+}
+
+func TestPackagesCmdText(t *testing.T) {
+	setTestIIB(t)
+	defer stopTestGrpc(t)
+
+	funcArgs := PackagesCmdArgs{Output: "text"}
+	out, err := packagesCmdFunc(funcArgs)
+	assert.Nil(t, err)
+	assert.Equal(t, EXPECTED_PACKAGES_TEXT, out)
 }
