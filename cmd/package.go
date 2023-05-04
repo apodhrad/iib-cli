@@ -4,10 +4,10 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 
+	"github.com/apodhrad/iib-cli/format"
 	"github.com/apodhrad/iib-cli/grpc"
 	"github.com/spf13/cobra"
 )
@@ -17,7 +17,12 @@ var packageCmd = &cobra.Command{
 	Use:   "package",
 	Short: "List a specific package",
 	Long:  `List a specific package`,
-	RunE:  packageRunE,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		funcArgs := PackageCmdArgs{Name: args[1], Output: output}
+		out, err := packageCmdFunc(funcArgs)
+		fmt.Println(out)
+		return err
+	},
 }
 
 func init() {
@@ -34,68 +39,43 @@ func init() {
 	// packageCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func packageRunE(cmd *cobra.Command, args []string) error {
-	var err error
-	var out string
-	var pkg Package
-
-	if len(args) == 0 {
-		return errors.New("Specify a package name!")
-	}
-
-	name := args[0]
-	out, err = packageCmdGrpc(name)
-	if err == nil {
-		pkg, err = packageCmdUnmarshal(out)
-		if err == nil {
-			if output == "json" {
-				out, err = packageToJson(pkg)
-			} else {
-				out, err = packageToText(pkg)
-			}
-			if err == nil {
-				fmt.Println(out)
-			}
-		}
-	}
-
-	return err
+type PackageCmdArgs struct {
+	Name   string
+	Output string
 }
 
-func packageCmdGrpc(name string) (string, error) {
-	var err error
+func packageCmdFunc(args PackageCmdArgs) (string, error) {
 	var out string
+	var err error
 
-	grpc.GrpcStart()
-	method := "api.Registry/GetPackage"
-	data := fmt.Sprintf(`{"name":"%s"}`, name)
-	grpcArg := grpc.GrpcArgMethodWithData(method, data)
-	out, err = grpc.GrpcExec(grpcArg)
-	grpc.GrpcStop()
+	if args.Name == "" {
+		return "", errors.New("Specify a package name!")
+	}
+
+	address := grpc.GrpcStart()
+	defer grpc.GrpcStop()
+
+	client, err := grpc.NewClient(address)
+	defer client.Close()
+
+	pkg, err := client.GetPackage(args.Name)
+
+	if args.Output == "json" {
+		out, err = format.Json(pkg, true)
+	} else {
+		data := [][]string{}
+		// headers
+		data = append(data, []string{"PACKAGE_NAME", "CHANNEL", "CSV", "DEFAULT"})
+		// items
+		for _, channel := range pkg.Channels {
+			isDefault := ""
+			if channel.Name == pkg.DefaultChannelName {
+				isDefault = "true"
+			}
+			data = append(data, []string{pkg.Name, channel.Name, channel.CsvName, isDefault})
+		}
+		out, err = format.Table(data)
+	}
+
 	return out, err
-}
-
-func packageCmdUnmarshal(input string) (Package, error) {
-	var pkg Package
-
-	err := json.Unmarshal([]byte(input), &pkg)
-
-	return pkg, err
-}
-
-func packageToText(pkg Package) (string, error) {
-	tbl := NewTable("Package", "Channel", "Csv", "Default")
-	for _, value := range pkg.Channels {
-		isDefault := ""
-		if value.Name == pkg.DefaultChannelName {
-			isDefault = "true"
-		}
-		tbl.AddRow(pkg.Name, value.Name, value.CsvName, isDefault)
-	}
-	return TableToString(tbl), nil
-}
-
-func packageToJson(pkg Package) (string, error) {
-	out, err := json.Marshal(pkg)
-	return string(out), err
 }

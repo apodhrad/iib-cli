@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const EXPECTED_PACKAGE_REDIS_GRPC_OUTPUT string = `{
+const EXPECTED_PACKAGE_REDIS_JSON string = `{
   "name": "redis-operator",
   "channels": [
     {
@@ -19,31 +19,29 @@ const EXPECTED_PACKAGE_REDIS_GRPC_OUTPUT string = `{
     }
   ],
   "defaultChannelName": "stable"
-}
+}`
+
+const EXPECTED_PACKAGE_REDIS_TABLE string = `PACKAGE_NAME    CHANNEL  CSV                     DEFAULT  
+redis-operator  preview  redis-operator.v0.4.0            
+redis-operator  stable   redis-operator.v0.13.0  true     
 `
 
-// func TestGetPackage(t *testing.T) {
-// 	setup()
-
-// 	err := packageRunE(nil, []string{"redis-operator"})
-// 	assert.Nil(t, err)
-
-// 	teardown()
-// }
-
-func TestPackageCmdGrpc(t *testing.T) {
+func TestPackageCmdJson(t *testing.T) {
 	setTestIIB(t)
 	defer stopTestGrpc(t)
 
-	out, err := packageCmdGrpc("redis-operator")
+	funcArgs := PackageCmdArgs{Name: "redis-operator", Output: "json"}
+	out, err := packageCmdFunc(funcArgs)
 	assert.Nil(t, err)
-	assert.Equal(t, EXPECTED_PACKAGE_REDIS_GRPC_OUTPUT, out)
+	assert.Equal(t, EXPECTED_PACKAGE_REDIS_JSON, out)
 }
 
-var EXPETED_PACKAGE_REDIS Package = Package{Name: "redis-operator", Channels: []Channel{{Name: "preview", CsvName: "redis-operator.v0.4.0"}, {Name: "stable", CsvName: "redis-operator.v0.13.0"}}, DefaultChannelName: "stable"}
+func TestPackageCmdText(t *testing.T) {
+	setTestIIB(t)
+	defer stopTestGrpc(t)
 
-func TestPackageCmdUnmarshal(t *testing.T) {
-	pkg, err := packageCmdUnmarshal(EXPECTED_PACKAGE_REDIS_GRPC_OUTPUT)
+	funcArgs := PackageCmdArgs{Name: "redis-operator", Output: "text"}
+	out, err := packageCmdFunc(funcArgs)
 	assert.Nil(t, err)
-	assert.Equal(t, EXPETED_PACKAGE_REDIS, pkg)
+	assert.Equal(t, EXPECTED_PACKAGE_REDIS_TABLE, out)
 }
