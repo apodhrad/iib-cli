@@ -4,10 +4,9 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/apodhrad/iib-cli/format"
 	"github.com/apodhrad/iib-cli/grpc"
+	"github.com/apodhrad/iib-cli/logging"
 	"github.com/spf13/cobra"
 )
 
@@ -16,12 +15,7 @@ var packagesCmd = &cobra.Command{
 	Use:   "packages",
 	Short: "List all packages",
 	Long:  `List all packages`,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		funcArgs := PackagesCmdArgs{Output: output}
-		out, err := packagesCmdFunc(funcArgs)
-		fmt.Println(out)
-		return err
-	},
+	RunE:  packagesCmdRunE,
 }
 
 func init() {
@@ -38,11 +32,9 @@ func init() {
 	// packagesCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-type PackagesCmdArgs struct {
-	Output string
-}
+func packagesCmdRunE(cmd *cobra.Command, args []string) error {
+	logging.INFO().Printf("Command: %v, args: %s", cmd, args)
 
-func packagesCmdFunc(args PackagesCmdArgs) (string, error) {
 	var out string
 	var err error
 
@@ -50,7 +42,7 @@ func packagesCmdFunc(args PackagesCmdArgs) (string, error) {
 	client, err := grpc.NewClient(address)
 	packageNames, err := client.GetPackageNames()
 
-	if args.Output == "json" {
+	if output == "json" {
 		out, err = format.Json(packageNames, true)
 	} else {
 		data := [][]string{}
@@ -63,5 +55,7 @@ func packagesCmdFunc(args PackagesCmdArgs) (string, error) {
 		out, err = format.Table(data)
 	}
 
-	return out, err
+	printOutput(out)
+
+	return err
 }

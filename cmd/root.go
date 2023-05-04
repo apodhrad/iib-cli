@@ -41,6 +41,10 @@ func Execute() {
 var output string
 
 func init() {
+	initialize()
+}
+
+func initialize() {
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
@@ -63,6 +67,14 @@ func readFile(file string) string {
 	data, err := os.ReadFile(file)
 	check(err)
 	return string(data)
+}
+
+func printOutput(out string) {
+	// make sure there is a new line at the end
+	out += "\n"
+	// remove empty lines (often at the end)
+	out = strings.ReplaceAll(out, "\n\n", "\n")
+	fmt.Printf(out)
 }
 
 func NewTable(headers ...string) table.Table {

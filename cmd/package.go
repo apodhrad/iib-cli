@@ -5,24 +5,22 @@ package cmd
 
 import (
 	"errors"
-	"fmt"
+	"io"
 
 	"github.com/apodhrad/iib-cli/format"
 	"github.com/apodhrad/iib-cli/grpc"
+	"github.com/apodhrad/iib-cli/logging"
 	"github.com/spf13/cobra"
 )
+
+var outputWriter io.Writer
 
 // packageCmd represents the package command
 var packageCmd = &cobra.Command{
 	Use:   "package",
 	Short: "List a specific package",
 	Long:  `List a specific package`,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		funcArgs := PackageCmdArgs{Name: args[1], Output: output}
-		out, err := packageCmdFunc(funcArgs)
-		fmt.Println(out)
-		return err
-	},
+	RunE:  packageCmdRunE,
 }
 
 func init() {
@@ -39,17 +37,14 @@ func init() {
 	// packageCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-type PackageCmdArgs struct {
-	Name   string
-	Output string
-}
+func packageCmdRunE(cmd *cobra.Command, args []string) error {
+	logging.INFO().Printf("Command: %v, args: %s", cmd, args)
 
-func packageCmdFunc(args PackageCmdArgs) (string, error) {
 	var out string
 	var err error
 
-	if args.Name == "" {
-		return "", errors.New("Specify a package name!")
+	if len(args) == 0 {
+		return errors.New("Specify a package name!")
 	}
 
 	address := grpc.GrpcStart()
@@ -58,9 +53,9 @@ func packageCmdFunc(args PackageCmdArgs) (string, error) {
 	client, err := grpc.NewClient(address)
 	defer client.Close()
 
-	pkg, err := client.GetPackage(args.Name)
+	pkg, err := client.GetPackage(args[0])
 
-	if args.Output == "json" {
+	if output == "json" {
 		out, err = format.Json(pkg, true)
 	} else {
 		data := [][]string{}
@@ -77,5 +72,7 @@ func packageCmdFunc(args PackageCmdArgs) (string, error) {
 		out, err = format.Table(data)
 	}
 
-	return out, err
+	printOutput(out)
+
+	return err
 }

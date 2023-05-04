@@ -13,29 +13,24 @@ const EXPECTED_PACKAGES_JSON string = `[
   {
     "name": "redis-operator"
   }
-]`
+]
+`
 
-const EXPECTED_PACKAGES_TEXT string = `PACKAGE_NAME    
+const EXPECTED_PACKAGES_TABLE string = `PACKAGE_NAME    
 prometheus      
 redis-operator  
 `
 
-func TestPackagesCmdJson(t *testing.T) {
-	setTestIIB(t)
-	defer stopTestGrpc(t)
+func TestCmdGetPackages(t *testing.T) {
+	out, err := testCmd(t, "get", "packages")
 
-	funcArgs := PackagesCmdArgs{Output: "json"}
-	out, err := packagesCmdFunc(funcArgs)
 	assert.Nil(t, err)
-	assert.Equal(t, EXPECTED_PACKAGES_JSON, out)
+	assert.Equal(t, EXPECTED_PACKAGES_TABLE, out)
 }
 
-func TestPackagesCmdText(t *testing.T) {
-	setTestIIB(t)
-	defer stopTestGrpc(t)
+func TestCmdGetPackagesJson(t *testing.T) {
+	out, err := testCmd(t, "get", "packages", "-o", "json")
 
-	funcArgs := PackagesCmdArgs{Output: "text"}
-	out, err := packagesCmdFunc(funcArgs)
 	assert.Nil(t, err)
-	assert.Equal(t, EXPECTED_PACKAGES_TEXT, out)
+	assert.Equal(t, EXPECTED_PACKAGES_JSON, string(out))
 }

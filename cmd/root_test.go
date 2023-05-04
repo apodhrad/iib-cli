@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"io/ioutil"
 	"log"
 	"os"
 	"testing"
@@ -34,4 +35,33 @@ func startTestGrpc(t *testing.T) {
 func stopTestGrpc(t *testing.T) {
 	os.Unsetenv("IIB")
 	grpc.GrpcStop()
+}
+
+func testCmd(t *testing.T, cmdArgs ...string) (string, error) {
+	setTestIIB(t)
+	defer stopTestGrpc(t)
+
+	rescueStdout := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+
+	// always reset the output
+	output = ""
+
+	// this gets captured
+	originalArgs := os.Args
+	os.Args = []string{"iib-cli"}
+	os.Args = append(os.Args, cmdArgs...)
+	err := rootCmd.Execute()
+
+	w.Close()
+	out, _ := ioutil.ReadAll(r)
+	os.Stdout = rescueStdout
+
+	os.Args = originalArgs
+
+	// v, _ := rootCmd.Flags().GetString("output")
+	// fmt.Println(">>> output = " + v)
+
+	return string(out), err
 }
