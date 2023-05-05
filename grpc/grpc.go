@@ -1,12 +1,8 @@
 package grpc
 
 import (
-	"bytes"
-	"errors"
 	"fmt"
 	"os"
-	"os/exec"
-	"strings"
 	"time"
 
 	"github.com/apodhrad/iib-cli/logging"
@@ -21,35 +17,6 @@ type GrpcArg struct {
 	data   string
 	api    string
 	method string
-}
-
-func GrpcArgApi(api string) GrpcArg {
-	return GrpcArg{api: api}
-}
-
-func GrpcArgMethod(method string) GrpcArg {
-	return GrpcArg{method: method}
-}
-
-func GrpcArgMethodWithData(method string, data string) GrpcArg {
-	return GrpcArg{method: method, data: data}
-}
-
-func GrpcArgToCmdArgs(grpcArg GrpcArg) ([]string, error) {
-	var cmdArgs []string = []string{"-plaintext"}
-	if grpcArg.data != "" {
-		cmdArgs = append(cmdArgs, "-d", grpcArg.data)
-	}
-	cmdArgs = append(cmdArgs, GRPC_SERVER)
-	if grpcArg.api != "" {
-		apiArgs := strings.Split(grpcArg.api, " ")
-		cmdArgs = append(cmdArgs, apiArgs...)
-	} else if grpcArg.method != "" {
-		cmdArgs = append(cmdArgs, grpcArg.method)
-	} else {
-		return cmdArgs, errors.New("No api or method is defined")
-	}
-	return cmdArgs, nil
 }
 
 func GrpcStart() string {
@@ -96,22 +63,6 @@ func GrpcStop() {
 		handlePanic(err)
 	}
 	logging.INFO().Printf("The grpc server is stopped")
-}
-
-func GrpcExec(grpcArg GrpcArg) (string, error) {
-	cmdArgs, err := GrpcArgToCmdArgs(grpcArg)
-	if err != nil {
-		return "", err
-	}
-
-	var errOut bytes.Buffer
-	cmd := exec.Command("grpcurl", cmdArgs...)
-	cmd.Stderr = &errOut
-	out, err := cmd.Output()
-	if err != nil {
-		err = errors.New(errOut.String() + err.Error())
-	}
-	return string(out), err
 }
 
 func waitForReadiness(address string) error {

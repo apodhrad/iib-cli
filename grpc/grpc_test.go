@@ -40,37 +40,3 @@ func stopTestGrpc(t *testing.T) {
 func TestGrpcConstants(t *testing.T) {
 	assert.Equal(t, "localhost:50051", GRPC_SERVER)
 }
-
-func TestGrcpArgToCmdArgs(t *testing.T) {
-	var cmdArgs []string
-	var err error
-
-	cmdArgs, err = GrpcArgToCmdArgs(GrpcArg{api: "list"})
-	assert.Nil(t, err)
-	assert.Equal(t, []string{"-plaintext", GRPC_SERVER, "list"}, cmdArgs)
-
-	cmdArgs, err = GrpcArgToCmdArgs(GrpcArg{api: "list API"})
-	assert.Nil(t, err)
-	assert.Equal(t, []string{"-plaintext", GRPC_SERVER, "list", "API"}, cmdArgs)
-
-	cmdArgs, err = GrpcArgToCmdArgs(GrpcArg{api: "describe API"})
-	assert.Nil(t, err)
-	assert.Equal(t, []string{"-plaintext", GRPC_SERVER, "describe", "API"}, cmdArgs)
-
-	cmdArgs, err = GrpcArgToCmdArgs(GrpcArg{method: "Service/Method"})
-	assert.Nil(t, err)
-	assert.Equal(t, []string{"-plaintext", GRPC_SERVER, "Service/Method"}, cmdArgs)
-
-	var data string = "{\"pkgName\":\"my-package\"}"
-	cmdArgs, err = GrpcArgToCmdArgs(GrpcArg{data: data, method: "Service/Method"})
-	assert.Nil(t, err)
-	assert.Equal(t, []string{"-plaintext", "-d", data, GRPC_SERVER, "Service/Method"}, cmdArgs)
-
-	cmdArgs, err = GrpcArgToCmdArgs(GrpcArg{})
-	assert.NotNil(t, err)
-	assert.Equal(t, err.Error(), "No api or method is defined")
-
-	cmdArgs, err = GrpcArgToCmdArgs(GrpcArg{data: data})
-	assert.NotNil(t, err)
-	assert.Equal(t, err.Error(), "No api or method is defined")
-}
