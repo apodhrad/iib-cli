@@ -4,10 +4,7 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"encoding/json"
-	"fmt"
-	"strings"
-
+	"github.com/apodhrad/iib-cli/format"
 	"github.com/apodhrad/iib-cli/grpc"
 	"github.com/spf13/cobra"
 )
@@ -37,59 +34,30 @@ func init() {
 func bundlesCmdRunE(cmd *cobra.Command, args []string) error {
 	var err error
 	var out string
-	var bundles []Bundle
 
-	out, err = bundlesCmdGrpc()
-	if err == nil {
-		bundles, err = bundlesCmdUnmarshal(out)
-		if err == nil {
-			if output == "json" {
-				out, err = bundlesCmdToJson(bundles)
-			} else {
-				out, err = bundlesCmdToText(bundles)
-			}
-			if err == nil {
-				fmt.Println(out)
-			}
+	address := grpc.GrpcStart()
+	client, err := grpc.NewClient(address)
+	bundles, err := client.GetBundles()
+
+	if output == "json" {
+		out, err = format.Json(bundles, true)
+	} else {
+		data := [][]string{}
+		// headers
+		data = append(data, []string{"PACKAGE", "CHANNEL", "CSV", "REPLACES"})
+		// items
+		for _, bundle := range bundles {
+			data = append(data, []string{
+				bundle.PackageName,
+				bundle.ChannelName,
+				bundle.CsvName,
+				bundle.Replaces,
+			})
 		}
+		out, err = format.Table(data)
 	}
+
+	printOutput(out)
+
 	return err
-}
-
-func bundlesCmdGrpc() (string, error) {
-	var err error
-	var out string
-
-	grpc.GrpcStart()
-	method := "api.Registry/ListBundles"
-	grpcArg := grpc.GrpcArgMethod(method)
-	out, err = grpc.GrpcExec(grpcArg)
-	grpc.GrpcStop()
-	return out, err
-}
-
-func bundlesCmdUnmarshal(input string) ([]Bundle, error) {
-	// grpcurl produces improper json array
-	// so, we will fix it to a proper json array
-	// numOfPackages := strings.Count(input, "}")
-	// input = strings.Replace(input, "}", "},", numOfPackages-1)
-	input = strings.ReplaceAll(input, "}\n{", "},\n{")
-	input = "[" + input + "]"
-	// now, we can unmarshal
-	var bundles []Bundle
-	err := json.Unmarshal([]byte(input), &bundles)
-	return bundles, err
-}
-
-func bundlesCmdToText(bundles []Bundle) (string, error) {
-	tbl := NewTable("Csv", "Package", "Channel", "Replaces")
-	for _, value := range bundles {
-		tbl.AddRow(value.CsvName, value.PackageName, value.ChannelName, value.Replaces)
-	}
-	return TableToString(tbl), nil
-}
-
-func bundlesCmdToJson(bundles []Bundle) (string, error) {
-	out, err := json.Marshal(bundles)
-	return string(out), err
 }

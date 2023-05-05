@@ -1,0 +1,21 @@
+PACKAGE         CHANNEL  CSV                        REPLACES                   
+prometheus      beta     prometheusoperator.0.14.0                             
+prometheus      beta     prometheusoperator.0.15.0  prometheusoperator.0.14.0  
+prometheus      beta     prometheusoperator.0.22.2  prometheusoperator.0.15.0  
+prometheus      beta     prometheusoperator.0.27.0  prometheusoperator.0.22.2  
+prometheus      beta     prometheusoperator.0.32.0  prometheusoperator.0.27.0  
+prometheus      beta     prometheusoperator.0.37.0  prometheusoperator.0.32.0  
+prometheus      beta     prometheusoperator.0.47.0  prometheusoperator.0.37.0  
+prometheus      beta     prometheusoperator.0.56.3  prometheusoperator.0.47.0  
+redis-operator  preview  redis-operator.v0.0.1                                 
+redis-operator  stable   redis-operator.v0.0.1                                 
+redis-operator  stable   redis-operator.v0.13.0     redis-operator.v0.8.0      
+redis-operator  preview  redis-operator.v0.2.0      redis-operator.v0.0.1      
+redis-operator  stable   redis-operator.v0.2.0      redis-operator.v0.0.1      
+redis-operator  preview  redis-operator.v0.3.0      redis-operator.v0.2.0      
+redis-operator  stable   redis-operator.v0.3.0      redis-operator.v0.2.0      
+redis-operator  preview  redis-operator.v0.4.0      redis-operator.v0.3.0      
+redis-operator  stable   redis-operator.v0.4.0      redis-operator.v0.3.0      
+redis-operator  stable   redis-operator.v0.5.0      redis-operator.v0.4.0      
+redis-operator  stable   redis-operator.v0.6.0      redis-operator.v0.5.0      
+redis-operator  stable   redis-operator.v0.8.0      redis-operator.v0.6.0      

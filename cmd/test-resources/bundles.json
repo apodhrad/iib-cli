@@ -1,0 +1,863 @@
+[
+  {
+    "csvName": "prometheusoperator.0.14.0",
+    "packageName": "prometheus",
+    "channelName": "beta",
+    "bundlePath": "quay.io/openshift-community-operators/prometheus:v0.14.0",
+    "providedApis": [
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "ServiceMonitor"
+      },
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "Alertmanager"
+      },
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "Prometheus"
+      }
+    ],
+    "version": "0.14.0",
+    "properties": [
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"ServiceMonitor\",\"version\":\"v1\"}"
+      },
+      {
+        "type": "olm.package",
+        "value": "{\"packageName\":\"prometheus\",\"version\":\"0.14.0\"}"
+      },
+      {
+        "type": "olm.maxOpenShiftVersion",
+        "value": "\"4.8\""
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"Alertmanager\",\"version\":\"v1\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"Prometheus\",\"version\":\"v1\"}"
+      }
+    ]
+  },
+  {
+    "csvName": "prometheusoperator.0.15.0",
+    "packageName": "prometheus",
+    "channelName": "beta",
+    "bundlePath": "quay.io/openshift-community-operators/prometheus:v0.15.0",
+    "providedApis": [
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "Alertmanager"
+      },
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "Prometheus"
+      },
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "ServiceMonitor"
+      }
+    ],
+    "version": "0.15.0",
+    "properties": [
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"Alertmanager\",\"version\":\"v1\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"Prometheus\",\"version\":\"v1\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"ServiceMonitor\",\"version\":\"v1\"}"
+      },
+      {
+        "type": "olm.package",
+        "value": "{\"packageName\":\"prometheus\",\"version\":\"0.15.0\"}"
+      },
+      {
+        "type": "olm.maxOpenShiftVersion",
+        "value": "\"4.8\""
+      }
+    ],
+    "replaces": "prometheusoperator.0.14.0"
+  },
+  {
+    "csvName": "prometheusoperator.0.22.2",
+    "packageName": "prometheus",
+    "channelName": "beta",
+    "bundlePath": "quay.io/openshift-community-operators/prometheus:v0.22.2",
+    "providedApis": [
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "PrometheusRule"
+      },
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "ServiceMonitor"
+      },
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "Alertmanager"
+      },
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "Prometheus"
+      }
+    ],
+    "version": "0.22.2",
+    "properties": [
+      {
+        "type": "olm.package",
+        "value": "{\"packageName\":\"prometheus\",\"version\":\"0.22.2\"}"
+      },
+      {
+        "type": "olm.maxOpenShiftVersion",
+        "value": "\"4.8\""
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"PrometheusRule\",\"version\":\"v1\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"ServiceMonitor\",\"version\":\"v1\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"Alertmanager\",\"version\":\"v1\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"Prometheus\",\"version\":\"v1\"}"
+      }
+    ],
+    "replaces": "prometheusoperator.0.15.0"
+  },
+  {
+    "csvName": "prometheusoperator.0.27.0",
+    "packageName": "prometheus",
+    "channelName": "beta",
+    "bundlePath": "quay.io/openshift-community-operators/prometheus:v0.27.0",
+    "providedApis": [
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "Prometheus"
+      },
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "PrometheusRule"
+      },
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "ServiceMonitor"
+      },
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "Alertmanager"
+      }
+    ],
+    "version": "0.27.0",
+    "properties": [
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"Prometheus\",\"version\":\"v1\"}"
+      },
+      {
+        "type": "olm.package",
+        "value": "{\"packageName\":\"prometheus\",\"version\":\"0.27.0\"}"
+      },
+      {
+        "type": "olm.maxOpenShiftVersion",
+        "value": "\"4.8\""
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"PrometheusRule\",\"version\":\"v1\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"ServiceMonitor\",\"version\":\"v1\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"Alertmanager\",\"version\":\"v1\"}"
+      }
+    ],
+    "replaces": "prometheusoperator.0.22.2"
+  },
+  {
+    "csvName": "prometheusoperator.0.32.0",
+    "packageName": "prometheus",
+    "channelName": "beta",
+    "bundlePath": "quay.io/openshift-community-operators/prometheus:v0.32.0",
+    "providedApis": [
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "ServiceMonitor"
+      },
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "Alertmanager"
+      },
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "PodMonitor"
+      },
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "Prometheus"
+      },
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "PrometheusRule"
+      }
+    ],
+    "version": "0.32.0",
+    "properties": [
+      {
+        "type": "olm.maxOpenShiftVersion",
+        "value": "\"4.8\""
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"ServiceMonitor\",\"version\":\"v1\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"Alertmanager\",\"version\":\"v1\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"PodMonitor\",\"version\":\"v1\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"Prometheus\",\"version\":\"v1\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"PrometheusRule\",\"version\":\"v1\"}"
+      },
+      {
+        "type": "olm.package",
+        "value": "{\"packageName\":\"prometheus\",\"version\":\"0.32.0\"}"
+      }
+    ],
+    "replaces": "prometheusoperator.0.27.0"
+  },
+  {
+    "csvName": "prometheusoperator.0.37.0",
+    "packageName": "prometheus",
+    "channelName": "beta",
+    "bundlePath": "quay.io/openshift-community-operators/prometheus:v0.37.0",
+    "providedApis": [
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "ServiceMonitor"
+      },
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "ThanosRuler"
+      },
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "Alertmanager"
+      },
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "PodMonitor"
+      },
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "Prometheus"
+      },
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "PrometheusRule"
+      }
+    ],
+    "version": "0.37.0",
+    "properties": [
+      {
+        "type": "olm.maxOpenShiftVersion",
+        "value": "\"4.8\""
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"ServiceMonitor\",\"version\":\"v1\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"ThanosRuler\",\"version\":\"v1\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"Alertmanager\",\"version\":\"v1\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"PodMonitor\",\"version\":\"v1\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"Prometheus\",\"version\":\"v1\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"PrometheusRule\",\"version\":\"v1\"}"
+      },
+      {
+        "type": "olm.package",
+        "value": "{\"packageName\":\"prometheus\",\"version\":\"0.37.0\"}"
+      }
+    ],
+    "replaces": "prometheusoperator.0.32.0"
+  },
+  {
+    "csvName": "prometheusoperator.0.47.0",
+    "packageName": "prometheus",
+    "channelName": "beta",
+    "bundlePath": "quay.io/openshift-community-operators/prometheus:v0.47.0",
+    "providedApis": [
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "PrometheusRule"
+      },
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "ServiceMonitor"
+      },
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "Prometheus"
+      },
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "ThanosRuler"
+      },
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1alpha1",
+        "kind": "AlertmanagerConfig"
+      },
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "Alertmanager"
+      },
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "PodMonitor"
+      },
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "Probe"
+      }
+    ],
+    "version": "0.47.0",
+    "properties": [
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"PrometheusRule\",\"version\":\"v1\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"ServiceMonitor\",\"version\":\"v1\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"Prometheus\",\"version\":\"v1\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"ThanosRuler\",\"version\":\"v1\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"AlertmanagerConfig\",\"version\":\"v1alpha1\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"Alertmanager\",\"version\":\"v1\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"PodMonitor\",\"version\":\"v1\"}"
+      },
+      {
+        "type": "olm.package",
+        "value": "{\"packageName\":\"prometheus\",\"version\":\"0.47.0\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"Probe\",\"version\":\"v1\"}"
+      }
+    ],
+    "replaces": "prometheusoperator.0.37.0"
+  },
+  {
+    "csvName": "prometheusoperator.0.56.3",
+    "packageName": "prometheus",
+    "channelName": "beta",
+    "bundlePath": "quay.io/openshift-community-operators/prometheus:v0.56.3",
+    "providedApis": [
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "PrometheusRule"
+      },
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "Probe"
+      },
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "Prometheus"
+      },
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "ThanosRuler"
+      },
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1alpha1",
+        "kind": "AlertmanagerConfig"
+      },
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "Alertmanager"
+      },
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "PodMonitor"
+      },
+      {
+        "group": "monitoring.coreos.com",
+        "version": "v1",
+        "kind": "ServiceMonitor"
+      }
+    ],
+    "version": "0.56.3",
+    "properties": [
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"PrometheusRule\",\"version\":\"v1\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"Probe\",\"version\":\"v1\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"Prometheus\",\"version\":\"v1\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"ThanosRuler\",\"version\":\"v1\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"AlertmanagerConfig\",\"version\":\"v1alpha1\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"Alertmanager\",\"version\":\"v1\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"PodMonitor\",\"version\":\"v1\"}"
+      },
+      {
+        "type": "olm.package",
+        "value": "{\"packageName\":\"prometheus\",\"version\":\"0.56.3\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"ServiceMonitor\",\"version\":\"v1\"}"
+      }
+    ],
+    "replaces": "prometheusoperator.0.47.0"
+  },
+  {
+    "csvName": "redis-operator.v0.0.1",
+    "packageName": "redis-operator",
+    "channelName": "preview",
+    "bundlePath": "quay.io/openshift-community-operators/redis-operator:v0.0.1",
+    "providedApis": [
+      {
+        "group": "redis.opstreelabs.in",
+        "version": "v1alpha1",
+        "kind": "Redis"
+      }
+    ],
+    "version": "0.0.1",
+    "properties": [
+      {
+        "type": "olm.package",
+        "value": "{\"packageName\":\"redis-operator\",\"version\":\"0.0.1\"}"
+      },
+      {
+        "type": "olm.maxOpenShiftVersion",
+        "value": "\"4.8\""
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"redis.opstreelabs.in\",\"kind\":\"Redis\",\"version\":\"v1alpha1\"}"
+      }
+    ]
+  },
+  {
+    "csvName": "redis-operator.v0.0.1",
+    "packageName": "redis-operator",
+    "channelName": "stable",
+    "bundlePath": "quay.io/openshift-community-operators/redis-operator:v0.0.1",
+    "providedApis": [
+      {
+        "group": "redis.opstreelabs.in",
+        "version": "v1alpha1",
+        "kind": "Redis"
+      }
+    ],
+    "version": "0.0.1",
+    "properties": [
+      {
+        "type": "olm.package",
+        "value": "{\"packageName\":\"redis-operator\",\"version\":\"0.0.1\"}"
+      },
+      {
+        "type": "olm.maxOpenShiftVersion",
+        "value": "\"4.8\""
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"redis.opstreelabs.in\",\"kind\":\"Redis\",\"version\":\"v1alpha1\"}"
+      }
+    ]
+  },
+  {
+    "csvName": "redis-operator.v0.13.0",
+    "packageName": "redis-operator",
+    "channelName": "stable",
+    "bundlePath": "quay.io/openshift-community-operators/redis-operator:v0.13.0",
+    "providedApis": [
+      {
+        "group": "redis.redis.opstreelabs.in",
+        "version": "v1beta1",
+        "kind": "Redis"
+      },
+      {
+        "group": "redis.redis.opstreelabs.in",
+        "version": "v1beta1",
+        "kind": "RedisCluster"
+      }
+    ],
+    "version": "0.13.0",
+    "properties": [
+      {
+        "type": "olm.package",
+        "value": "{\"packageName\":\"redis-operator\",\"version\":\"0.13.0\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"redis.redis.opstreelabs.in\",\"kind\":\"Redis\",\"version\":\"v1beta1\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"redis.redis.opstreelabs.in\",\"kind\":\"RedisCluster\",\"version\":\"v1beta1\"}"
+      }
+    ],
+    "replaces": "redis-operator.v0.8.0"
+  },
+  {
+    "csvName": "redis-operator.v0.2.0",
+    "packageName": "redis-operator",
+    "channelName": "preview",
+    "bundlePath": "quay.io/openshift-community-operators/redis-operator:v0.2.0",
+    "providedApis": [
+      {
+        "group": "redis.opstreelabs.in",
+        "version": "v1alpha1",
+        "kind": "Redis"
+      }
+    ],
+    "version": "0.2.0",
+    "properties": [
+      {
+        "type": "olm.package",
+        "value": "{\"packageName\":\"redis-operator\",\"version\":\"0.2.0\"}"
+      },
+      {
+        "type": "olm.maxOpenShiftVersion",
+        "value": "\"4.8\""
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"redis.opstreelabs.in\",\"kind\":\"Redis\",\"version\":\"v1alpha1\"}"
+      }
+    ],
+    "replaces": "redis-operator.v0.0.1"
+  },
+  {
+    "csvName": "redis-operator.v0.2.0",
+    "packageName": "redis-operator",
+    "channelName": "stable",
+    "bundlePath": "quay.io/openshift-community-operators/redis-operator:v0.2.0",
+    "providedApis": [
+      {
+        "group": "redis.opstreelabs.in",
+        "version": "v1alpha1",
+        "kind": "Redis"
+      }
+    ],
+    "version": "0.2.0",
+    "properties": [
+      {
+        "type": "olm.package",
+        "value": "{\"packageName\":\"redis-operator\",\"version\":\"0.2.0\"}"
+      },
+      {
+        "type": "olm.maxOpenShiftVersion",
+        "value": "\"4.8\""
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"redis.opstreelabs.in\",\"kind\":\"Redis\",\"version\":\"v1alpha1\"}"
+      }
+    ],
+    "replaces": "redis-operator.v0.0.1"
+  },
+  {
+    "csvName": "redis-operator.v0.3.0",
+    "packageName": "redis-operator",
+    "channelName": "preview",
+    "bundlePath": "quay.io/openshift-community-operators/redis-operator:v0.3.0",
+    "providedApis": [
+      {
+        "group": "redis.redis.opstreelabs.in",
+        "version": "v1beta1",
+        "kind": "Redis"
+      }
+    ],
+    "version": "0.3.0",
+    "properties": [
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"redis.redis.opstreelabs.in\",\"kind\":\"Redis\",\"version\":\"v1beta1\"}"
+      },
+      {
+        "type": "olm.package",
+        "value": "{\"packageName\":\"redis-operator\",\"version\":\"0.3.0\"}"
+      }
+    ],
+    "replaces": "redis-operator.v0.2.0"
+  },
+  {
+    "csvName": "redis-operator.v0.3.0",
+    "packageName": "redis-operator",
+    "channelName": "stable",
+    "bundlePath": "quay.io/openshift-community-operators/redis-operator:v0.3.0",
+    "providedApis": [
+      {
+        "group": "redis.redis.opstreelabs.in",
+        "version": "v1beta1",
+        "kind": "Redis"
+      }
+    ],
+    "version": "0.3.0",
+    "properties": [
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"redis.redis.opstreelabs.in\",\"kind\":\"Redis\",\"version\":\"v1beta1\"}"
+      },
+      {
+        "type": "olm.package",
+        "value": "{\"packageName\":\"redis-operator\",\"version\":\"0.3.0\"}"
+      }
+    ],
+    "replaces": "redis-operator.v0.2.0"
+  },
+  {
+    "csvName": "redis-operator.v0.4.0",
+    "packageName": "redis-operator",
+    "channelName": "preview",
+    "bundlePath": "quay.io/openshift-community-operators/redis-operator:v0.4.0",
+    "providedApis": [
+      {
+        "group": "redis.redis.opstreelabs.in",
+        "version": "v1beta1",
+        "kind": "Redis"
+      }
+    ],
+    "version": "0.4.0",
+    "properties": [
+      {
+        "type": "olm.package",
+        "value": "{\"packageName\":\"redis-operator\",\"version\":\"0.4.0\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"redis.redis.opstreelabs.in\",\"kind\":\"Redis\",\"version\":\"v1beta1\"}"
+      }
+    ],
+    "replaces": "redis-operator.v0.3.0"
+  },
+  {
+    "csvName": "redis-operator.v0.4.0",
+    "packageName": "redis-operator",
+    "channelName": "stable",
+    "bundlePath": "quay.io/openshift-community-operators/redis-operator:v0.4.0",
+    "providedApis": [
+      {
+        "group": "redis.redis.opstreelabs.in",
+        "version": "v1beta1",
+        "kind": "Redis"
+      }
+    ],
+    "version": "0.4.0",
+    "properties": [
+      {
+        "type": "olm.package",
+        "value": "{\"packageName\":\"redis-operator\",\"version\":\"0.4.0\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"redis.redis.opstreelabs.in\",\"kind\":\"Redis\",\"version\":\"v1beta1\"}"
+      }
+    ],
+    "replaces": "redis-operator.v0.3.0"
+  },
+  {
+    "csvName": "redis-operator.v0.5.0",
+    "packageName": "redis-operator",
+    "channelName": "stable",
+    "bundlePath": "quay.io/openshift-community-operators/redis-operator:v0.5.0",
+    "providedApis": [
+      {
+        "group": "redis.redis.opstreelabs.in",
+        "version": "v1beta1",
+        "kind": "Redis"
+      }
+    ],
+    "version": "0.5.0",
+    "properties": [
+      {
+        "type": "olm.package",
+        "value": "{\"packageName\":\"redis-operator\",\"version\":\"0.5.0\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"redis.redis.opstreelabs.in\",\"kind\":\"Redis\",\"version\":\"v1beta1\"}"
+      }
+    ],
+    "replaces": "redis-operator.v0.4.0"
+  },
+  {
+    "csvName": "redis-operator.v0.6.0",
+    "packageName": "redis-operator",
+    "channelName": "stable",
+    "bundlePath": "quay.io/openshift-community-operators/redis-operator:v0.6.0",
+    "providedApis": [
+      {
+        "group": "redis.redis.opstreelabs.in",
+        "version": "v1beta1",
+        "kind": "Redis"
+      },
+      {
+        "group": "redis.redis.opstreelabs.in",
+        "version": "v1beta1",
+        "kind": "RedisCluster"
+      }
+    ],
+    "version": "0.6.0",
+    "properties": [
+      {
+        "type": "olm.package",
+        "value": "{\"packageName\":\"redis-operator\",\"version\":\"0.6.0\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"redis.redis.opstreelabs.in\",\"kind\":\"Redis\",\"version\":\"v1beta1\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"redis.redis.opstreelabs.in\",\"kind\":\"RedisCluster\",\"version\":\"v1beta1\"}"
+      }
+    ],
+    "replaces": "redis-operator.v0.5.0"
+  },
+  {
+    "csvName": "redis-operator.v0.8.0",
+    "packageName": "redis-operator",
+    "channelName": "stable",
+    "bundlePath": "quay.io/openshift-community-operators/redis-operator:v0.8.0",
+    "providedApis": [
+      {
+        "group": "redis.redis.opstreelabs.in",
+        "version": "v1beta1",
+        "kind": "RedisCluster"
+      },
+      {
+        "group": "redis.redis.opstreelabs.in",
+        "version": "v1beta1",
+        "kind": "Redis"
+      }
+    ],
+    "version": "0.8.0",
+    "properties": [
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"redis.redis.opstreelabs.in\",\"kind\":\"RedisCluster\",\"version\":\"v1beta1\"}"
+      },
+      {
+        "type": "olm.package",
+        "value": "{\"packageName\":\"redis-operator\",\"version\":\"0.8.0\"}"
+      },
+      {
+        "type": "olm.gvk",
+        "value": "{\"group\":\"redis.redis.opstreelabs.in\",\"kind\":\"Redis\",\"version\":\"v1beta1\"}"
+      }
+    ],
+    "replaces": "redis-operator.v0.6.0"
+  }
+]

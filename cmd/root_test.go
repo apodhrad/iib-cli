@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/apodhrad/iib-cli/grpc"
+	"github.com/stretchr/testify/assert"
 )
 
 var (
@@ -64,4 +65,10 @@ func testCmd(t *testing.T, cmdArgs ...string) (string, error) {
 	// fmt.Println(">>> output = " + v)
 
 	return string(out), err
+}
+
+func readTestResource(t *testing.T, filename string) string {
+	data, err := os.ReadFile("test-resources/" + filename)
+	assert.Nil(t, err)
+	return string(data)
 }

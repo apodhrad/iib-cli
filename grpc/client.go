@@ -13,26 +13,6 @@ type Service struct {
 	Methods []string
 }
 
-type Channel struct {
-	Name    string `json:"name"`
-	CsvName string `json:"csvName"`
-}
-
-type Package struct {
-	Name               string    `json:"name"`
-	Channels           []Channel `json:"channels"`
-	DefaultChannelName string    `json:"defaultChannelName"`
-}
-
-type Bundle struct {
-	CsvName     string `json:"csvName"`
-	PackageName string `json:"packageName"`
-	ChannelName string `json:"channelname"`
-	BundlePath  string `json:"bundlePath"`
-	Version     string `json:"version"`
-	Replaces    string `json:"replaces,omitempty"`
-}
-
 type Client struct {
 	Registry api.RegistryClient
 	Conn     *grpc.ClientConn
@@ -63,18 +43,14 @@ func (c *Client) GetPackageNames() ([]*api.PackageName, error) {
 
 	stream, err := c.Registry.ListPackages(ctx, &api.ListPackageRequest{})
 	if err != nil {
-		// return []Package{}, err
 		return []*api.PackageName{}, err
 	}
 
-	// packages := []Package{}
 	packages := []*api.PackageName{}
 	for next, err := stream.Recv(); err != io.EOF; next, err = stream.Recv() {
 		if err != nil && err != io.EOF {
-			// return []Package{}, err
 			return []*api.PackageName{}, err
 		}
-		// nextPackage := Package{Name: next.Name}
 		packages = append(packages, next)
 	}
 
@@ -86,4 +62,35 @@ func (c *Client) GetPackage(name string) (*api.Package, error) {
 	defer cancel()
 
 	return c.Registry.GetPackage(ctx, &api.GetPackageRequest{Name: name})
+}
+
+func (c *Client) GetBundles() ([]*api.Bundle, error) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	stream, err := c.Registry.ListBundles(ctx, &api.ListBundlesRequest{})
+	if err != nil {
+		return []*api.Bundle{}, err
+	}
+
+	bundles := []*api.Bundle{}
+	for next, err := stream.Recv(); err != io.EOF; next, err = stream.Recv() {
+		if err != nil && err != io.EOF {
+			return []*api.Bundle{}, err
+		}
+		bundles = append(bundles, next)
+	}
+
+	return bundles, nil
+}
+
+func (c *Client) GetBundle(pkg string, channel string, csv string) (*api.Bundle, error) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	return c.Registry.GetBundle(ctx, &api.GetBundleRequest{
+		PkgName:     pkg,
+		ChannelName: channel,
+		CsvName:     csv,
+	})
 }
