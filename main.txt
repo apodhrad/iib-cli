@@ -1,0 +1,20 @@
+Index Image Bundle (IIB) cli tool allows you to explore APIs, packages and bundles in IIBs.
+
+Examples:
+  iib-cli get packages
+  iib-cli get bundles
+
+Usage:
+  iib-cli [command]
+
+Available Commands:
+  completion  Generate the autocompletion script for the specified shell
+  get         A brief description of your command
+  help        Help about any command
+
+Flags:
+  -h, --help            help for iib-cli
+  -o, --output string   Output format (default "text")
+  -t, --toggle          Help message for toggle
+
+Use "iib-cli [command] --help" for more information about a command.

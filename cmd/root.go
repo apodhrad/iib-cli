@@ -20,7 +20,6 @@ var rootCmd = &cobra.Command{
 	Long: `Index Image Bundle (IIB) cli tool allows you to explore APIs, packages and bundles in IIBs.
 
 Examples:
-  iib-cli api
   iib-cli get packages
   iib-cli get bundles
 `,

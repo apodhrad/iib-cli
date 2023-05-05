@@ -61,9 +61,6 @@ func testCmd(t *testing.T, cmdArgs ...string) (string, error) {
 
 	os.Args = originalArgs
 
-	// v, _ := rootCmd.Flags().GetString("output")
-	// fmt.Println(">>> output = " + v)
-
 	return string(out), err
 }
 
