@@ -36,7 +36,10 @@ func bundlesCmdRunE(cmd *cobra.Command, args []string) error {
 	var out string
 
 	address := grpc.GrpcStart()
+	defer grpc.GrpcStop()
 	client, err := grpc.NewClient(address)
+	defer client.Close()
+
 	bundles, err := client.GetBundles()
 
 	if output == "json" {

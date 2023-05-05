@@ -4,12 +4,10 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"bytes"
 	"fmt"
 	"os"
 	"strings"
 
-	"github.com/rodaine/table"
 	"github.com/spf13/cobra"
 )
 
@@ -62,34 +60,10 @@ func check(e error) {
 	}
 }
 
-func readFile(file string) string {
-	data, err := os.ReadFile(file)
-	check(err)
-	return string(data)
-}
-
 func printOutput(out string) {
 	// make sure there is a new line at the end
 	out += "\n"
 	// remove empty lines (often at the end)
 	out = strings.ReplaceAll(out, "\n\n", "\n")
 	fmt.Printf(out)
-}
-
-func NewTable(headers ...string) table.Table {
-	table.DefaultHeaderFormatter = func(format string, vals ...interface{}) string {
-		return strings.ToUpper(fmt.Sprintf(format, vals...))
-	}
-	newHeaders := make([]interface{}, len(headers))
-	for i, v := range headers {
-		newHeaders[i] = v
-	}
-	return table.New(newHeaders...)
-}
-
-func TableToString(tbl table.Table) string {
-	var tblBuf bytes.Buffer
-	tbl.WithWriter(&tblBuf)
-	tbl.Print()
-	return tblBuf.String()
 }

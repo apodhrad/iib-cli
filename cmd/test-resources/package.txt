@@ -1,0 +1,3 @@
+PACKAGE_NAME    CHANNEL  CSV                     DEFAULT  
+redis-operator  preview  redis-operator.v0.4.0            
+redis-operator  stable   redis-operator.v0.13.0  true     

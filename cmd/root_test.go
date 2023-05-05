@@ -23,24 +23,21 @@ func init() {
 
 	TestLogger = log.New(file, "TEST: ", log.Ldate|log.Ltime|log.Lshortfile)
 }
-func setTestIIB(t *testing.T) {
+
+func setup(t *testing.T) {
 	TestLogger.Println("Set IIB for test " + t.Name())
 	os.Setenv("IIB", "quay.io/apodhrad/iib-test:v0.0.1")
-}
-
-func startTestGrpc(t *testing.T) {
-	setTestIIB(t)
 	grpc.GrpcStart()
 }
 
-func stopTestGrpc(t *testing.T) {
+func teardown(t *testing.T) {
 	os.Unsetenv("IIB")
 	grpc.GrpcStop()
 }
 
 func testCmd(t *testing.T, cmdArgs ...string) (string, error) {
-	setTestIIB(t)
-	defer stopTestGrpc(t)
+	setup(t)
+	defer teardown(t)
 
 	rescueStdout := os.Stdout
 	r, w, _ := os.Pipe()

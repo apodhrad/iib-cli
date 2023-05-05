@@ -1,0 +1,8 @@
+[
+  {
+    "name": "prometheus"
+  },
+  {
+    "name": "redis-operator"
+  }
+]
