@@ -24,9 +24,16 @@ func TestCmdGetPackageJson(t *testing.T) {
 
 func TestCmdGetPackageNone(t *testing.T) {
 	stdout, stderr, err := testCmd(t, "get", "package")
-
 	assert.NotNil(t, err)
 	assert.Equal(t, "", stdout)
 	expected := readTestResource(t, "package-none.stderr")
+	assert.Equal(t, expected, stderr)
+}
+
+func TestCmdGetPackageIncorrect(t *testing.T) {
+	stdout, stderr, err := testCmd(t, "get", "package", "foo-operator")
+	assert.NotNil(t, err)
+	assert.Equal(t, "", stdout)
+	expected := readTestResource(t, "package-incorrect.stderr")
 	assert.Equal(t, expected, stderr)
 }

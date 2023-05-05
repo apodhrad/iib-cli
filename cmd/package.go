@@ -54,6 +54,9 @@ func packageCmdRunE(cmd *cobra.Command, args []string) error {
 	defer client.Close()
 
 	pkg, err := client.GetPackage(args[0])
+	if err != nil {
+		return err
+	}
 
 	if output == "json" {
 		out, err = format.Json(pkg, true)

@@ -1,0 +1,10 @@
+Error: rpc error: code = Unknown desc = package foo-operator not found
+Usage:
+  iib-cli get package [flags]
+
+Flags:
+  -h, --help   help for package
+
+Global Flags:
+  -o, --output string   Output format (default "text")
+
