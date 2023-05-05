@@ -4,10 +4,9 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"encoding/json"
 	"errors"
-	"fmt"
 
+	"github.com/apodhrad/iib-cli/format"
 	"github.com/apodhrad/iib-cli/grpc"
 	"github.com/spf13/cobra"
 )
@@ -37,55 +36,41 @@ func init() {
 func bundleCmdRunE(cmd *cobra.Command, args []string) error {
 	var err error
 	var out string
-	var bundle Bundle
 
 	if len(args) < 3 {
-		return errors.New("Specify a csv, pkg and package name!")
+		return errors.New("Specify a package, channel and csv!")
 	}
 
-	out, err = bundleCmdGrpc(args[0], args[1], args[2])
-	if err == nil {
-		bundle, err = bundleCmdUnmarshal(out)
-		if err == nil {
-			if output == "json" {
-				out, err = bundleCmdToJson(bundle)
-			} else {
-				out, err = bundleCmdToText(bundle)
-			}
-			if err == nil {
-				fmt.Println(out)
-			}
-		}
+	address := grpc.GrpcStart()
+	defer grpc.GrpcStop()
+	client, err := grpc.NewClient(address)
+	defer client.Close()
+
+	bundle, err := client.GetBundle(args[0], args[1], args[2])
+
+	// TODO: find out why the object cannot be printed - fmt.Println() freezes
+	// As a workaround we will skip it
+	bundle.Object = nil
+
+	// Just for the sake of better readability
+	bundle.CsvJson = ""
+
+	if output == "json" {
+		out, err = format.Json(bundle, true)
+	} else {
+		data := [][]string{}
+		// headers
+		data = append(data, []string{"PACKAGE", "CHANNEL", "CSV"})
+		// items
+		data = append(data, []string{
+			bundle.PackageName,
+			bundle.ChannelName,
+			bundle.CsvName,
+		})
+		out, err = format.Table(data)
 	}
+
+	printOutput(out)
+
 	return err
-}
-
-func bundleCmdGrpc(csv string, pkg string, channel string) (string, error) {
-	var err error
-	var out string
-
-	grpc.GrpcStart()
-	method := "api.Registry/GetBundle"
-	data := fmt.Sprintf(`{"csvName":"%s","pkgName":"%s","channelName":"%s"}`, csv, pkg, channel)
-	grpcArg := grpc.GrpcArgMethodWithData(method, data)
-	out, err = grpc.GrpcExec(grpcArg)
-	grpc.GrpcStop()
-	return out, err
-}
-
-func bundleCmdUnmarshal(input string) (Bundle, error) {
-	var bundle Bundle
-	err := json.Unmarshal([]byte(input), &bundle)
-	return bundle, err
-}
-
-func bundleCmdToText(bundle Bundle) (string, error) {
-	tbl := NewTable("Csv", "Package", "Channel")
-	tbl.AddRow(bundle.CsvName, bundle.PackageName, bundle.ChannelName)
-	return TableToString(tbl), nil
-}
-
-func bundleCmdToJson(bundle Bundle) (string, error) {
-	out, err := json.Marshal(bundle)
-	return string(out), err
 }

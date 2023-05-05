@@ -1,0 +1,2 @@
+PACKAGE     CHANNEL  CSV                        
+prometheus  beta     prometheusoperator.0.56.3  

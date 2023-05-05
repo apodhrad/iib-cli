@@ -1,0 +1,95 @@
+{
+  "csvName": "prometheusoperator.0.56.3",
+  "packageName": "prometheus",
+  "channelName": "beta",
+  "bundlePath": "quay.io/openshift-community-operators/prometheus:v0.56.3",
+  "providedApis": [
+    {
+      "group": "monitoring.coreos.com",
+      "version": "v1",
+      "kind": "PrometheusRule",
+      "plural": "prometheusrules"
+    },
+    {
+      "group": "monitoring.coreos.com",
+      "version": "v1",
+      "kind": "Probe",
+      "plural": "probes"
+    },
+    {
+      "group": "monitoring.coreos.com",
+      "version": "v1",
+      "kind": "Prometheus",
+      "plural": "prometheuses"
+    },
+    {
+      "group": "monitoring.coreos.com",
+      "version": "v1",
+      "kind": "ThanosRuler",
+      "plural": "thanosrulers"
+    },
+    {
+      "group": "monitoring.coreos.com",
+      "version": "v1alpha1",
+      "kind": "AlertmanagerConfig",
+      "plural": "alertmanagerconfigs"
+    },
+    {
+      "group": "monitoring.coreos.com",
+      "version": "v1",
+      "kind": "Alertmanager",
+      "plural": "alertmanagers"
+    },
+    {
+      "group": "monitoring.coreos.com",
+      "version": "v1",
+      "kind": "PodMonitor",
+      "plural": "podmonitors"
+    },
+    {
+      "group": "monitoring.coreos.com",
+      "version": "v1",
+      "kind": "ServiceMonitor",
+      "plural": "servicemonitors"
+    }
+  ],
+  "version": "0.56.3",
+  "properties": [
+    {
+      "type": "olm.gvk",
+      "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"PrometheusRule\",\"version\":\"v1\"}"
+    },
+    {
+      "type": "olm.gvk",
+      "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"Probe\",\"version\":\"v1\"}"
+    },
+    {
+      "type": "olm.gvk",
+      "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"Prometheus\",\"version\":\"v1\"}"
+    },
+    {
+      "type": "olm.gvk",
+      "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"ThanosRuler\",\"version\":\"v1\"}"
+    },
+    {
+      "type": "olm.gvk",
+      "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"AlertmanagerConfig\",\"version\":\"v1alpha1\"}"
+    },
+    {
+      "type": "olm.gvk",
+      "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"Alertmanager\",\"version\":\"v1\"}"
+    },
+    {
+      "type": "olm.gvk",
+      "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"PodMonitor\",\"version\":\"v1\"}"
+    },
+    {
+      "type": "olm.package",
+      "value": "{\"packageName\":\"prometheus\",\"version\":\"0.56.3\"}"
+    },
+    {
+      "type": "olm.gvk",
+      "value": "{\"group\":\"monitoring.coreos.com\",\"kind\":\"ServiceMonitor\",\"version\":\"v1\"}"
+    }
+  ]
+}
