@@ -7,15 +7,17 @@ import (
 )
 
 func TestGetBundles(t *testing.T) {
-	out, err := testCmd(t, "get", "bundles")
+	stdout, stderr, err := testCmd(t, "get", "bundles")
 	assert.Nil(t, err)
 	expected := readTestResource(t, "bundles.txt")
-	assert.Equal(t, expected, out)
+	assert.Equal(t, expected, stdout)
+	assert.Equal(t, "", stderr)
 }
 
 func TestGetBundlesJson(t *testing.T) {
-	out, err := testCmd(t, "get", "bundles", "-o", "json")
+	stdout, stderr, err := testCmd(t, "get", "bundles", "-o", "json")
 	assert.Nil(t, err)
 	expected := readTestResource(t, "bundles.json")
-	assert.Equal(t, expected, out)
+	assert.Equal(t, expected, stdout)
+	assert.Equal(t, "", stderr)
 }

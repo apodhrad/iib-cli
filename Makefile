@@ -10,5 +10,5 @@ test:
 
 test-coverage:
 	@mkdir -p $(TARGET)
-	@go test ./... -coverprofile=$(TARGET)/coverage.out
+	@GRPC_STARTSTOP=false go test ./... -coverprofile=$(TARGET)/coverage.out
 	go tool cover -html=$(TARGET)/coverage.out

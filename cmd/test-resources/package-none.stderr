@@ -1,0 +1,10 @@
+Error: Specify a package name!
+Usage:
+  iib-cli get package [flags]
+
+Flags:
+  -h, --help   help for package
+
+Global Flags:
+  -o, --output string   Output format (default "text")
+

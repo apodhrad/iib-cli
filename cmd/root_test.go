@@ -35,30 +35,39 @@ func teardown(t *testing.T) {
 	grpc.GrpcStop()
 }
 
-func testCmd(t *testing.T, cmdArgs ...string) (string, error) {
+func testCmd(t *testing.T, cmdArgs ...string) (string, string, error) {
 	setup(t)
 	defer teardown(t)
-
-	rescueStdout := os.Stdout
-	r, w, _ := os.Pipe()
-	os.Stdout = w
 
 	// always reset the output
 	output = ""
 
-	// this gets captured
+	// set args
 	originalArgs := os.Args
 	os.Args = []string{"iib-cli"}
 	os.Args = append(os.Args, cmdArgs...)
+
+	// catch stdout
+	rescueStdout := os.Stdout
+	rescueStderr := os.Stderr
+	rStdout, wStdout, _ := os.Pipe()
+	rStderr, wStderr, _ := os.Pipe()
+	os.Stdout = wStdout
+	os.Stderr = wStderr
+
+	// this will be captured
 	err := rootCmd.Execute()
 
-	w.Close()
-	out, _ := ioutil.ReadAll(r)
+	wStdout.Close()
+	wStderr.Close()
+	stdout, _ := ioutil.ReadAll(rStdout)
+	stderr, _ := ioutil.ReadAll(rStderr)
 	os.Stdout = rescueStdout
+	os.Stderr = rescueStderr
 
 	os.Args = originalArgs
 
-	return string(out), err
+	return string(stdout), string(stderr), err
 }
 
 func readTestResource(t *testing.T, filename string) string {

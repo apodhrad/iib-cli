@@ -1,0 +1,15 @@
+Usage:
+  iib-cli get [flags]
+  iib-cli get [command]
+
+Available Commands:
+  bundle      List a specific bundle
+  bundles     List all bundles
+  package     List a specific package
+  packages    List all packages
+
+Flags:
+  -h, --help            help for get
+  -o, --output string   Output format (default "text")
+
+Use "iib-cli get [command] --help" for more information about a command.
