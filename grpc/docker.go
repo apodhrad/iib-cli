@@ -30,14 +30,39 @@ func DockerPullImage(image string) error {
 	ctx, cli := newClient()
 	defer cli.Close()
 
+	logging.DEBUG().Printf("Check if image %s aleardy exists", image)
+	imageList, err := cli.ImageList(ctx, types.ImageListOptions{All: true})
+	if err != nil {
+		return err
+	}
+	for _, imageSummary := range imageList {
+		for _, repoTag := range imageSummary.RepoTags {
+			if repoTag == image {
+				logging.DEBUG().Printf("Image %s already exists", image)
+				return nil
+			}
+		}
+	}
+
+	logging.DEBUG().Printf("Image %s doesn't exist", image)
+	return DockerPullImageForce(image)
+}
+
+// Pull a docker image
+func DockerPullImageForce(image string) error {
+	logging.INFO().Printf("Pull image %s", image)
+	ctx, cli := newClient()
+	defer cli.Close()
+
 	logging.DEBUG().Printf("docker pull %s\n", image)
 	out, err := cli.ImagePull(ctx, image, types.ImagePullOptions{})
+	if err != nil {
+		return err
+	}
 	defer out.Close()
 
-	if err != nil {
-		logging.INFO().Printf("Image %s was successfully pulled\n", image)
-	}
-	return err
+	logging.INFO().Printf("Image %s was successfully pulled", image)
+	return nil
 }
 
 // Start a docker container
