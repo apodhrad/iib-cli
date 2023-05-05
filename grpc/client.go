@@ -5,6 +5,7 @@ import (
 	"io"
 
 	"github.com/operator-framework/operator-registry/pkg/api"
+	"github.com/operator-framework/operator-registry/pkg/api/grpc_health_v1"
 	"google.golang.org/grpc"
 )
 
@@ -15,6 +16,7 @@ type Service struct {
 
 type Client struct {
 	Registry api.RegistryClient
+	Health   grpc_health_v1.HealthClient
 	Conn     *grpc.ClientConn
 }
 
@@ -25,6 +27,7 @@ func NewClient(address string) (*Client, error) {
 	}
 	c := &Client{
 		Registry: api.NewRegistryClient(conn),
+		Health:   grpc_health_v1.NewHealthClient(conn),
 		Conn:     conn,
 	}
 	return c, err
@@ -93,4 +96,18 @@ func (c *Client) GetBundle(pkg string, channel string, csv string) (*api.Bundle,
 		ChannelName: channel,
 		CsvName:     csv,
 	})
+}
+
+func (c *Client) HealthCheck() (bool, error) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	res, err := c.Health.Check(ctx, &grpc_health_v1.HealthCheckRequest{Service: "Registry"})
+	if err != nil {
+		return false, err
+	}
+	if res.Status != grpc_health_v1.HealthCheckResponse_SERVING {
+		return false, nil
+	}
+	return true, nil
 }

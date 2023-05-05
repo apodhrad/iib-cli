@@ -78,14 +78,15 @@ func GrpcStart() string {
 	}
 	logging.INFO().Printf("Container wit ID %s was sucesfully started", id)
 
+	address := GRPC_HOST + ":" + GRPC_PORT
 	// the container should be running, now wait for its readiness
 	logging.INFO().Printf("Wait for its readiness")
-	err = waitForResponse()
+	err = waitForReadiness(address)
 	if err != nil {
 		handlePanic(err)
 	}
-	logging.INFO().Printf("The grpc server is up and running on localhost:" + GRPC_PORT)
-	return GRPC_HOST + ":" + GRPC_PORT
+	logging.INFO().Printf("The grpc server is up and running on %s", address)
+	return address
 }
 
 func GrpcStop() {
@@ -113,12 +114,16 @@ func GrpcExec(grpcArg GrpcArg) (string, error) {
 	return string(out), err
 }
 
-func waitForResponse() error {
+func waitForReadiness(address string) error {
 	var err error
 	for i := 0; i < 10; i++ {
-		out, err := GrpcExec(GrpcArgApi("list"))
-		if err == nil && out != "" {
-			return nil
+		client, err := NewClient(address)
+		defer client.Close()
+		if client != nil && err == nil {
+			isReady, _ := client.HealthCheck()
+			if isReady {
+				return nil
+			}
 		}
 		time.Sleep(1 * time.Second)
 	}
