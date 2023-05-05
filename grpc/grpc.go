@@ -13,13 +13,21 @@ const GRPC_HOST string = "localhost"
 const GRPC_PORT string = "50051"
 const GRPC_SERVER string = GRPC_HOST + ":" + GRPC_PORT
 
-type GrpcArg struct {
-	data   string
-	api    string
-	method string
-}
+const GRPC_STARTSTOP_ENV_KEY string = "GRPC_STARTSTOP"
 
 func GrpcStart() string {
+	logging.INFO().Printf("Start the server")
+
+	if isStartStopDisabled() {
+		logging.INFO().Printf("Start/Stop feature is disabled")
+		err := waitForReadiness(GRPC_SERVER)
+		if err == nil {
+			logging.INFO().Printf("Sever is up and running on %s", GRPC_SERVER)
+			return GRPC_SERVER
+		}
+		logging.INFO().Printf("Server doesn't respond, so let's start it as usual")
+	}
+
 	// check is iib was specified
 	iib := os.Getenv("IIB")
 	if iib == "" {
@@ -45,19 +53,25 @@ func GrpcStart() string {
 	}
 	logging.INFO().Printf("Container wit ID %s was sucesfully started", id)
 
-	address := GRPC_HOST + ":" + GRPC_PORT
 	// the container should be running, now wait for its readiness
 	logging.INFO().Printf("Wait for its readiness")
-	err = waitForReadiness(address)
+	err = waitForReadiness(GRPC_SERVER)
 	if err != nil {
 		handlePanic(err)
 	}
-	logging.INFO().Printf("The grpc server is up and running on %s", address)
-	return address
+	logging.INFO().Printf("The grpc server is up and running on %s", GRPC_SERVER)
+	return GRPC_SERVER
 }
 
 func GrpcStop() {
-	logging.INFO().Printf("Stop grpc server")
+	logging.INFO().Printf("Stop the server")
+
+	if isStartStopDisabled() {
+		logging.INFO().Printf("Start/Stop feature is disabled")
+		logging.INFO().Printf("Thus, the server will not be stopped")
+		return
+	}
+
 	err := DockerStopContainer(GRPC_NAME)
 	if err != nil {
 		handlePanic(err)
@@ -65,8 +79,12 @@ func GrpcStop() {
 	logging.INFO().Printf("The grpc server is stopped")
 }
 
+func isStartStopDisabled() bool {
+	startStop := os.Getenv(GRPC_STARTSTOP_ENV_KEY)
+	return startStop == "false"
+}
+
 func waitForReadiness(address string) error {
-	var err error
 	for i := 0; i < 10; i++ {
 		client, err := NewClient(address)
 		defer client.Close()
@@ -78,7 +96,7 @@ func waitForReadiness(address string) error {
 		}
 		time.Sleep(1 * time.Second)
 	}
-	return err
+	return fmt.Errorf("Server on %s is still not ready!", address)
 }
 
 func handlePanic(err error) {
